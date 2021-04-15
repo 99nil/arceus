@@ -1,0 +1,129 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: (devel)
+  creationTimestamp: null
+  name: storageversions.internal.apiserver.k8s.io
+spec:
+  conversion:
+    strategy: None
+  group: internal.apiserver.k8s.io
+  names:
+    kind: StorageVersion
+    listKind: StorageVersionList
+    plural: storageversions
+    singular: storageversion
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: ' Storage version of a specific resource.'
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: Spec is an empty spec. It is here to comply with Kubernetes
+              API style.
+            type: object
+          status:
+            description: API server instances report the version they can decode and
+              the version they encode objects to when persisting objects in the backend.
+            properties:
+              commonEncodingVersion:
+                description: If all API server instances agree on the same encoding
+                  storage version, then this field is set to that version. Otherwise
+                  this field is left empty. API servers should finish updating its
+                  storageVersionStatus entry before serving write operations, so that
+                  this field will be in sync with the reality.
+                type: string
+              conditions:
+                description: The latest available observations of the storageVersion's
+                  state.
+                items:
+                  description: Describes the state of the storageVersion at a certain
+                    point.
+                  properties:
+                    lastTransitionTime:
+                      description: Last time the condition transitioned from one status
+                        to another.
+                      format: date-time
+                      type: string
+                    message:
+                      description: A human readable message indicating details about
+                        the transition.
+                      type: string
+                    observedGeneration:
+                      description: If set, this represents the .metadata.generation
+                        that the condition was set based upon.
+                      format: int64
+                      type: integer
+                    reason:
+                      description: The reason for the condition's last transition.
+                      type: string
+                    status:
+                      description: Status of the condition, one of True, False, Unknown.
+                      type: string
+                    type:
+                      description: Type of the condition.
+                      type: string
+                  required:
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+              storageVersions:
+                description: The reported versions per API server instance.
+                items:
+                  description: An API server instance reports the version it can decode
+                    and the version it encodes objects to when persisting objects
+                    in the backend.
+                  properties:
+                    apiServerID:
+                      description: The ID of the reporting API server.
+                      type: string
+                    decodableVersions:
+                      description: The API server can decode objects encoded in these
+                        versions. The encodingVersion must be included in the decodableVersions.
+                      items:
+                        type: string
+                      type: array
+                      x-kubernetes-list-type: set
+                    encodingVersion:
+                      description: The API server encodes the object to this version
+                        when persisting it in the backend (e.g., etcd).
+                      type: string
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - apiServerID
+                x-kubernetes-list-type: map
+            type: object
+        required:
+        - spec
+        - status
+        type: object
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions:
+  - v1alpha1
