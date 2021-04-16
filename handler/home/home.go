@@ -19,7 +19,6 @@ import (
 	"net/http"
 
 	"github.com/pkgms/go/ctr"
-
 	"github.com/zc2638/swag/endpoint"
 	"github.com/zc2638/swag/swagger"
 )
@@ -36,7 +35,8 @@ func Route(doc *swagger.API) {
 		endpoint.New(
 			http.MethodGet, "/",
 			endpoint.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				ctr.OK(w, "Hello Arceus!")
+				ctr.Found(w, r, "/web")
+				//ctr.OK(w, "Hello Arceus!")
 			})),
 			endpoint.ResponseSuccess(),
 			endpoint.Tags(tag),

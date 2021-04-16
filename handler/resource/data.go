@@ -17,6 +17,8 @@ package resource
 
 import (
 	"bytes"
+	"sort"
+	"strings"
 
 	apiextensionsV1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 )
@@ -90,6 +92,9 @@ func BuildNode(prop *apiextensionsV1.JSONSchemaProps, node *TNode, extras ...str
 		}
 		node.Children = append(node.Children, *cNode)
 	}
+	sort.SliceStable(node.Children, func(i, j int) bool {
+		return strings.Compare(node.Children[i].Name, node.Children[j].Name) < 0
+	})
 	completeAPIVersion(node, extras...)
 	return node
 }

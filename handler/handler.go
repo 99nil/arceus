@@ -26,9 +26,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
-	"github.com/pkgms/go/ctr"
 	"github.com/zc2638/swag"
-	"github.com/zc2638/swag/endpoint"
 )
 
 func New() http.Handler {
@@ -39,18 +37,7 @@ func New() http.Handler {
 		cors.AllowAll().Handler,
 	)
 	mux.Mount("/web", web.New())
-	apiDoc := swag.New(
-		swag.Title("Arceus API Doc"),
-		swag.Tag("index", "主要分类"),
-	)
-	apiDoc.AddEndpoint(endpoint.New(
-		http.MethodGet, "/",
-		endpoint.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			ctr.OK(w, "Hello Kubeedge!")
-		})),
-		endpoint.ResponseSuccess(),
-		endpoint.NoSecurity(),
-	))
+	apiDoc := swag.New(swag.Title("Arceus API Doc"))
 	apiDoc.AddEndpointFunc(home.Route, resource.Route)
 	apiDoc.RegisterMuxWithData(mux, false)
 	return mux
