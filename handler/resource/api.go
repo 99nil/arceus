@@ -62,22 +62,18 @@ func Route(doc *swagger.API) {
 			http.MethodPost, "/resource/upload",
 			endpoint.Handler(upload()),
 			endpoint.Summary("资源上传"),
-			FormData(swagger.Parameter{
-				In:          "formData",
-				Type:        "file",
-				Name:        "file",
-				Description: "file to upload",
-				Required:    true,
-			}),
+			func(b *endpoint.Builder) {
+				if b.Endpoint.Parameters == nil {
+					b.Endpoint.Parameters = []swagger.Parameter{}
+				}
+				b.Endpoint.Parameters = append(b.Endpoint.Parameters, swagger.Parameter{
+					In:          "formData",
+					Type:        "file",
+					Name:        "file",
+					Description: "file to upload",
+					Required:    true,
+				})
+			},
 		),
 	)
-}
-
-func FormData(p swagger.Parameter) endpoint.Option {
-	return func(b *endpoint.Builder) {
-		if b.Endpoint.Parameters == nil {
-			b.Endpoint.Parameters = []swagger.Parameter{}
-		}
-		b.Endpoint.Parameters = append(b.Endpoint.Parameters, p)
-	}
 }

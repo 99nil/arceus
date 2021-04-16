@@ -1073,6 +1073,10 @@ spec:
                         Defaults to Always if :latest tag is specified, or IfNotPresent
                         otherwise. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images'
                       type: string
+                      enum:
+                        - Always
+                        - IfNotPresent
+                        - Never
                     lifecycle:
                       description: Actions that the management system should take
                         in response to container lifecycle events. Cannot be updated.
@@ -2266,6 +2270,10 @@ spec:
                         Defaults to Always if :latest tag is specified, or IfNotPresent
                         otherwise. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images'
                       type: string
+                      enums:
+                        - Always
+                        - IfNotPresent
+                        - Never
                     lifecycle:
                       description: Lifecycle is not allowed for ephemeral containers.
                       properties:

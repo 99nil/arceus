@@ -48,6 +48,7 @@ type TNode struct {
 	Value    string      `json:"value"`    // 默认值
 	Descs    []TNodeDesc `json:"descs"`    // 描述（默认描述、中文描述）
 	Required []string    `json:"required"` // 关联，仅在object节点定义
+	Enums    []string    `json:"enums"`    // 枚举
 	Children []TNode     `json:"children"` // 子节点
 }
 
@@ -78,6 +79,12 @@ func BuildNode(prop *apiextensionsV1.JSONSchemaProps, node *TNode, extras ...str
 		}
 		if v.Default != nil && v.Default.Raw != nil {
 			cNode.Value = string(bytes.Trim(v.Default.Raw, "\""))
+		}
+		for _, e := range v.Enum {
+			if e.Raw == nil {
+				continue
+			}
+			cNode.Enums = append(cNode.Enums, string(bytes.Trim(e.Raw, "\"")))
 		}
 		switch v.Type {
 		// 对象的时候，需要向下解析properties
