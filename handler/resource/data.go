@@ -27,6 +27,7 @@ const (
 	NodeRoot       = "root"
 	NodeAPIVersion = "apiVersion"
 	NodeKind       = "kind"
+	NodeMetadata   = "metadata"
 )
 
 const (
@@ -103,6 +104,7 @@ func BuildNode(prop *apiextensionsV1.JSONSchemaProps, node *TNode, extras ...str
 		return strings.Compare(node.Children[i].Name, node.Children[j].Name) < 0
 	})
 	completeAPIVersion(node, extras...)
+	completeMetadata(node)
 	return node
 }
 
@@ -123,7 +125,7 @@ func buildArrayNode(prop *apiextensionsV1.JSONSchemaProps, pNode *TNode) *TNode 
 }
 
 func completeAPIVersion(node *TNode, extras ...string) {
-	if node.Name != NodeRoot {
+	if node.Key != NodeRoot {
 		return
 	}
 	if len(extras) < 2 {
@@ -163,4 +165,77 @@ func completeAPIVersion(node *TNode, extras ...string) {
 		kindNode.Value = kind
 	}
 	node.Required = append(node.Required, NodeAPIVersion, NodeKind)
+}
+
+func completeMetadata(node *TNode) {
+	if node.Key != NodeRoot+"."+NodeMetadata {
+		return
+	}
+	if len(node.Children) == 0 && node.Type == TypeObject {
+		node.Required = []string{"name"}
+		node.Children = make([]TNode, 0, 5)
+		node.Children = append(node.Children, TNode{
+			Key:   node.Key + ".name",
+			Name:  "name",
+			Title: "name",
+			Type:  TypeString,
+			Descs: []TNodeDesc{
+				{
+					Locale: "",
+					Desc: `Name must be unique within a namespace. 
+Is required when creating resources, although some resources may allow a client to request the generation of an appropriate name automatically.
+Name is primarily intended for creation idempotence and configuration definition.
+Cannot be updated.`,
+				},
+			},
+		}, TNode{
+			Key:   node.Key + ".namespace",
+			Name:  "namespace",
+			Title: "namespace",
+			Type:  TypeString,
+			Descs: []TNodeDesc{
+				{
+					Desc: `Namespace defines the space within which each name must be unique. 
+An empty namespace is equivalent to the "default" namespace, but "default" is the canonical representation.
+Not all objects are required to be scoped to a namespace - the value of this field for those objects will be empty.`,
+				},
+			},
+		}, TNode{
+			Key:   node.Key + ".clusterName",
+			Name:  "clusterName",
+			Title: "clusterName",
+			Type:  TypeString,
+			Descs: []TNodeDesc{
+				{
+					Desc: `The name of the cluster which the object belongs to.
+This is used to distinguish resources with same name and namespace in different clusters.
+This field is not set anywhere right now and apiserver is going to ignore it if set in create or update request.`,
+				},
+			},
+		}, TNode{
+			Key:   node.Key + ".labels",
+			Name:  "labels",
+			Title: "labels",
+			Type:  TypeObject,
+			Descs: []TNodeDesc{
+				{
+					Desc: `Map of string keys and values that can be used to organize and categorize (scope and select) objects.
+May match selectors of replication controllers and services.
+More info: http://kubernetes.io/docs/user-guide/labels`,
+				},
+			},
+		}, TNode{
+			Key:   node.Key + ".annotations",
+			Name:  "annotations",
+			Title: "annotations",
+			Type:  TypeObject,
+			Descs: []TNodeDesc{
+				{
+					Desc: `Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. 
+They are not queryable and should be preserved when modifying objects.
+More info: http://kubernetes.io/docs/user-guide/annotations`,
+				},
+			},
+		})
+	}
 }
