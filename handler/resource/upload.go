@@ -22,13 +22,12 @@ import (
 	"os"
 	"path/filepath"
 
-	"sigs.k8s.io/yaml"
-
 	"github.com/pkgms/go/ctr"
 	"github.com/zc2638/arceus/global"
 	apiextensionsV1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset/scheme"
 	"k8s.io/apimachinery/pkg/runtime"
+	"sigs.k8s.io/yaml"
 )
 
 func upload() http.HandlerFunc {
