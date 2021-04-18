@@ -73,7 +73,7 @@ func generate() {
 			fmt.Printf("read file skipped: %s\n", v.Name())
 			continue
 		}
-		if err := resource.GenerateFile(file); err != nil {
+		if err := resource.GenerateFile(file, global.KubernetesResourcePath); err != nil {
 			fmt.Printf("generate file failed: %s, %s\n", v.Name(), err)
 		}
 	}

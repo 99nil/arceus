@@ -16,14 +16,16 @@ limitations under the License.
 package resource
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 
-	"github.com/pkgms/go/ctr"
 	"github.com/zc2638/arceus/global"
+
+	"github.com/pkgms/go/ctr"
 	apiextensionsV1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset/scheme"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -44,15 +46,22 @@ func upload() http.HandlerFunc {
 			ctr.InternalError(w, err)
 			return
 		}
-		if err := GenerateFile(fileData); err != nil {
-			ctr.InternalError(w, err)
-			return
+		arr := bytes.Split(fileData, []byte("---\n"))
+		for _, v := range arr {
+			vb := bytes.TrimSpace(v)
+			if len(vb) == 0 {
+				continue
+			}
+			if err := GenerateFile(vb, global.CustomResourcePath); err != nil {
+				ctr.BadRequest(w, err)
+				return
+			}
 		}
 		ctr.Success(w)
 	}
 }
 
-func GenerateFile(source []byte) error {
+func GenerateFile(source []byte, targetDir string) error {
 	var data apiextensionsV1.CustomResourceDefinition
 	if err := runtime.DecodeInto(scheme.Codecs.UniversalDecoder(), source, &data); err != nil {
 		return fmt.Errorf("resource parse failed: %s", err)
@@ -66,7 +75,7 @@ func GenerateFile(source []byte) error {
 	if len(data.Spec.Versions) == 0 {
 		return fmt.Errorf("version not found")
 	}
-	dir := filepath.Join(global.ResourcePath, data.Spec.Group, data.Spec.Names.Kind)
+	dir := filepath.Join(targetDir, data.Spec.Group, data.Spec.Names.Kind)
 	if _, err := os.Stat(dir); err != nil {
 		if !os.IsNotExist(err) {
 			return err

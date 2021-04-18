@@ -13,10 +13,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package global
+package static
 
-const (
-	ResourcePath           = "static"
-	CustomResourcePath     = ResourcePath + "/custom"
-	KubernetesResourcePath = ResourcePath + "/kubernetes"
-)
+import "embed"
+
+const KubernetesDir = "kubernetes"
+
+//go:embed kubernetes
+var Kubernetes embed.FS

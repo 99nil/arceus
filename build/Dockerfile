@@ -22,7 +22,6 @@ LABEL maintainer="zc" \
 ENV TS="Asia/Shanghai"
 COPY --from=alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /work/arceus /work/arceus
-COPY --from=builder /work/static /work/static
 COPY --from=builder /work/public /work/public
 
 WORKDIR /work
