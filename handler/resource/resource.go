@@ -91,7 +91,16 @@ func buildResourceList(base fs.FS, basePath string) ([]Resource, error) {
 
 func list() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		result, err := buildResourceList(static.Kubernetes, static.KubernetesDir)
+		typ := r.URL.Query().Get("type")
+		var (
+			result []Resource
+			err    error
+		)
+		if typ == "custom" {
+			result, err = buildResourceList(os.DirFS(global.ResourcePath), "custom")
+		} else {
+			result, err = buildResourceList(static.Kubernetes, static.KubernetesDir)
+		}
 		if err != nil {
 			ctr.InternalError(w, err)
 			return
@@ -105,22 +114,18 @@ func info() http.HandlerFunc {
 		group := r.URL.Query().Get("group")
 		kind := r.URL.Query().Get("kind")
 		version := r.URL.Query().Get("version")
-		typ := r.URL.Query().Get("type")
 
-		var fsys fs.FS
 		filePath := filepath.Join(group, kind, version) + ".yaml"
-		if typ == "custom" {
-			fsys = os.DirFS(global.CustomResourcePath)
-		} else {
-			fsys = static.Kubernetes
-			filePath = filepath.Join(static.KubernetesDir, filePath)
+		baseFilePath := filepath.Join(static.KubernetesDir, filePath)
+		fileData, err := fs.ReadFile(static.Kubernetes, baseFilePath)
+		if os.IsNotExist(err) {
+			fileData, err = fs.ReadFile(os.DirFS(global.CustomResourcePath), filePath)
 		}
-		data, err := fs.ReadFile(fsys, filePath)
 		if err != nil {
 			ctr.BadRequest(w, errors.New("resource not exist"))
 			return
 		}
-		ctr.Bytes(w, data)
+		ctr.Bytes(w, fileData)
 	}
 }
 
@@ -129,17 +134,13 @@ func tree() http.HandlerFunc {
 		group := r.URL.Query().Get("group")
 		kind := r.URL.Query().Get("kind")
 		version := r.URL.Query().Get("version")
-		typ := r.URL.Query().Get("type")
 
-		var fsys fs.FS
 		filePath := filepath.Join(group, kind, version) + ".yaml"
-		if typ == "custom" {
-			fsys = os.DirFS(global.CustomResourcePath)
-		} else {
-			fsys = static.Kubernetes
-			filePath = filepath.Join(static.KubernetesDir, filePath)
+		baseFilePath := filepath.Join(static.KubernetesDir, filePath)
+		fileData, err := fs.ReadFile(static.Kubernetes, baseFilePath)
+		if os.IsNotExist(err) {
+			fileData, err = fs.ReadFile(os.DirFS(global.CustomResourcePath), filePath)
 		}
-		fileData, err := fs.ReadFile(fsys, filePath)
 		if err != nil {
 			ctr.BadRequest(w, errors.New("resource not exist"))
 			return

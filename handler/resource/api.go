@@ -35,6 +35,7 @@ func Route(doc *swagger.API) {
 			http.MethodGet, "/resource/list",
 			endpoint.Handler(list()),
 			endpoint.Summary("资源列表"),
+			endpoint.Query("type", swagger.TypeString, "资源类型", false),
 			endpoint.ResponseSuccess(endpoint.Schema([]Resource{})),
 			endpoint.Tags(tag),
 		),
