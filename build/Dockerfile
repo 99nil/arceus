@@ -11,6 +11,11 @@ WORKDIR /work
 ADD . .
 RUN GOOS=linux CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix cgo -o arceus github.com/zc2638/arceus/cmd
 
+FROM gruebel/upx:latest as upx
+WORKDIR /work
+COPY --from=builder /work/arceus /work/arceus.pre
+RUN upx --best --lzma -o /work/arceus arceus.pre
+
 FROM alpine:3.6 as alpine
 RUN apk add -U --no-cache ca-certificates
 
@@ -21,7 +26,7 @@ LABEL maintainer="zc" \
 
 ENV TS="Asia/Shanghai"
 COPY --from=alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder /work/arceus /work/arceus
+COPY --from=upx /work/arceus /work/arceus
 COPY --from=builder /work/public /work/public
 COPY --from=builder /work/static/custom /work/static/custom
 
