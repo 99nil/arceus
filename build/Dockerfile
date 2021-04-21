@@ -17,7 +17,7 @@ RUN apk add -U --no-cache ca-certificates
 FROM alpine
 LABEL maintainer="zc" \
     email="zc2638@qq.com" \
-    version="v1.0.0"
+    version="v0.1.0"
 
 ENV TS="Asia/Shanghai"
 COPY --from=alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
