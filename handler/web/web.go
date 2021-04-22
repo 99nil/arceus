@@ -17,22 +17,32 @@ package web
 
 import (
 	"net/http"
-	"path/filepath"
-	"strings"
 
 	"github.com/go-chi/chi"
+	"github.com/zc2638/arceus/static"
+	"github.com/zc2638/swag/swagger"
 )
 
 func New() http.Handler {
 	mux := chi.NewMux()
-	mux.Mount("/", fileSystem())
+	mux.Mount("/", http.StripPrefix("/web", fileSystem()))
 	return mux
 }
 
 func fileSystem() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		url := strings.Trim(r.URL.Path, "/web")
-		fp := filepath.Join("public/ui", url)
-		http.ServeFile(w, r, fp)
+		if r.URL.Path == "" {
+			localRedirect(w, r, "/web/")
+			return
+		}
+		http.FileServer(swagger.DirFS(static.UIDir, static.UI)).ServeHTTP(w, r)
 	}
+}
+
+func localRedirect(w http.ResponseWriter, r *http.Request, newPath string) {
+	if q := r.URL.RawQuery; q != "" {
+		newPath += "?" + q
+	}
+	w.Header().Set("Location", newPath)
+	w.WriteHeader(http.StatusMovedPermanently)
 }

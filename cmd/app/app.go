@@ -48,6 +48,9 @@ func NewServerCommand() *cobra.Command {
 }
 
 func run(cmd *cobra.Command, args []string) error {
+	if err := global.Init(); err != nil {
+		return err
+	}
 	ctx := context.Background()
 	s := server.New(&server.Config{
 		Port: 2638,

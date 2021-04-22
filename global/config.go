@@ -13,16 +13,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package static
+package global
 
-import "embed"
+import (
+	"os"
+)
 
-const KubernetesDir = "kubernetes"
-
-const UIDir = "ui"
-
-//go:embed kubernetes
-var Kubernetes embed.FS
-
-//go:embed ui
-var UI embed.FS
+func Init() error {
+	if _, err := os.Stat(CustomResourcePath); err != nil {
+		if !os.IsNotExist(err) {
+			return err
+		}
+		if err := os.MkdirAll(CustomResourcePath, os.ModePerm); err != nil {
+			return err
+		}
+	}
+	return nil
+}

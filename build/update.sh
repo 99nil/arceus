@@ -10,9 +10,9 @@ yarn install || exit
 yarn build || exit
 echo "Generated."
 cd ../../
-mv public/ui public/ui.old && mv $tmpDir/arceus-ui/build public/ui
+mv static/ui static/ui.old && mv $tmpDir/arceus-ui/build static/ui
 echo "Finished."
-rm -rf $tmpDir public/ui.old
+rm -rf $tmpDir static/ui.old
 echo "Cleanup."
 
 
