@@ -21,8 +21,10 @@ const KubernetesDir = "kubernetes"
 
 const UIDir = "ui"
 
+// Kubernetes is a dir for static content
 //go:embed kubernetes
 var Kubernetes embed.FS
 
+// UI is a dir for static content
 //go:embed ui
 var UI embed.FS

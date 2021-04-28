@@ -77,6 +77,25 @@ func Route(doc *swagger.API) {
 					Required:    true,
 				})
 			},
+			endpoint.ResponseSuccess(),
+		),
+		endpoint.New(
+			http.MethodPost, "/resource/generate",
+			endpoint.Handler(generate()),
+			endpoint.Summary("资源生成"),
+			func(b *endpoint.Builder) {
+				if b.Endpoint.Parameters == nil {
+					b.Endpoint.Parameters = []swagger.Parameter{}
+				}
+				b.Endpoint.Parameters = append(b.Endpoint.Parameters, swagger.Parameter{
+					In:          "formData",
+					Type:        "file",
+					Name:        "file",
+					Description: "file to upload",
+					Required:    true,
+				})
+			},
+			endpoint.ResponseSuccess(),
 		),
 	)
 }

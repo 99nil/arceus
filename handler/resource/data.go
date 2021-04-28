@@ -31,9 +31,11 @@ const (
 )
 
 const (
-	TypeObject = "object"
-	TypeArray  = "array"
-	TypeString = "string"
+	TypeObject  = "object"
+	TypeArray   = "array"
+	TypeString  = "string"
+	TypeNumber  = "number"
+	TypeBoolean = "boolean"
 )
 
 type TNodeDesc struct {
@@ -168,7 +170,7 @@ func completeAPIVersion(node *TNode, extras ...string) {
 }
 
 func completeMetadata(node *TNode) {
-	if node.Key != NodeRoot+"."+NodeMetadata {
+	if node.Name != NodeMetadata {
 		return
 	}
 	if len(node.Children) == 0 && node.Type == TypeObject {

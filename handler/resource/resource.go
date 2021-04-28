@@ -25,13 +25,13 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/zc2638/arceus/global"
-
 	"github.com/pkgms/go/ctr"
-	"github.com/zc2638/arceus/static"
 	apiextensionsV1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset/scheme"
 	"k8s.io/apimachinery/pkg/runtime"
+
+	"github.com/zc2638/arceus/global"
+	"github.com/zc2638/arceus/static"
 )
 
 type Resource struct {

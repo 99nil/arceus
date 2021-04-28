@@ -23,13 +23,17 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/zc2638/arceus/global"
+	"github.com/zc2638/arceus/pkg/util"
 
 	"github.com/pkgms/go/ctr"
+	"github.com/tidwall/gjson"
 	apiextensionsV1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset/scheme"
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/yaml"
+
+	"github.com/zc2638/arceus/global"
+	"github.com/zc2638/arceus/pkg/types"
 )
 
 func upload() http.HandlerFunc {
@@ -103,4 +107,108 @@ func GenerateFile(source []byte, targetDir string) error {
 		newFile.Close()
 	}
 	return nil
+}
+
+func generate() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		file, _, err := r.FormFile("file")
+		if err != nil {
+			ctr.BadRequest(w, err)
+			return
+		}
+		defer file.Close()
+
+		fileData, err := io.ReadAll(file)
+		if err != nil {
+			ctr.InternalError(w, err)
+			return
+		}
+		jsonData, err := yaml.YAMLToJSON(fileData)
+		if err != nil {
+			ctr.BadRequest(w, err)
+			return
+		}
+
+		data := types.ArceusResourceDefinition{
+			TypeMeta:   types.TypeMeta{},
+			ObjectMeta: types.ObjectMeta{},
+			Spec: types.ArceusResourceDefinitionSpec{
+				Group: "custom.arceus",
+				Names: types.ArceusResourceDefinitionNames{
+					Kind: "kind-" + util.RandomStr(6),
+				},
+			},
+		}
+		result := gjson.ParseBytes(jsonData)
+		jsonSchema := dealSchema(result)
+		version := types.ArceusResourceDefinitionVersion{}
+		version.Name = "v1"
+		version.Schema = &types.ArceusResourceValidation{
+			OpenAPIV3Schema: jsonSchema,
+		}
+		data.Spec.Versions = []types.ArceusResourceDefinitionVersion{version}
+		// 转yaml
+		b, err := yaml.Marshal(&data)
+		if err != nil {
+			ctr.InternalError(w, err)
+			return
+		}
+		ctr.Bytes(w, b)
+	}
+}
+
+func dealSchema(data gjson.Result) *types.JSONSchemaProps {
+	props := &types.JSONSchemaProps{}
+	if data.IsArray() {
+		// array handle
+		props.Type = TypeArray
+		arr := data.Array()
+		if len(arr) == 0 {
+			return props
+		}
+		set := make(map[string]types.JSONSchemaProps)
+		var itemProps types.JSONSchemaProps
+		for _, v := range arr {
+			current := dealSchema(v)
+			if itemProps.Type == "" {
+				itemProps.Type = current.Type
+			}
+			if itemProps.Type != current.Type {
+				continue
+			}
+			if current.Type != TypeObject {
+				itemProps = *dealSchema(v)
+				break
+			}
+			for ik, iv := range current.Properties {
+				set[ik] = iv
+			}
+		}
+		if itemProps.Type == TypeObject {
+			itemProps.Properties = set
+		}
+		props.Items = &itemProps
+	} else if data.IsObject() {
+		// object handle
+		props.Type = TypeObject
+		props.Properties = make(map[string]types.JSONSchemaProps)
+		obj := data.Map()
+		for k, v := range obj {
+			props.Properties[k] = *dealSchema(v)
+		}
+	} else {
+		switch data.Type {
+		case gjson.String:
+			props.Type = TypeString
+		case gjson.Number:
+			props.Type = TypeNumber
+		case gjson.True, gjson.False:
+			props.Type = TypeBoolean
+		default:
+			props.Type = TypeString
+		}
+		val := data.String()
+		props.Default = &val
+	}
+	return props
 }

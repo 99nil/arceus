@@ -2,6 +2,8 @@
 
 Pokémon - arceus
 
+Structured configuration generator.
+
 ## Run
 ### Local
 ```shell

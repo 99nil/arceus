@@ -13,31 +13,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package handler
+package util
 
 import (
-	"net/http"
-
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
-	"github.com/go-chi/cors"
-
-	"github.com/zc2638/arceus/handler/home"
-	"github.com/zc2638/arceus/handler/resource"
-	"github.com/zc2638/arceus/handler/web"
-	"github.com/zc2638/swag"
+	"math/rand"
+	"time"
 )
 
-func New() http.Handler {
-	mux := chi.NewMux()
-	mux.Use(
-		middleware.Recoverer,
-		middleware.Logger,
-		cors.AllowAll().Handler,
-	)
-	mux.Mount("/web", web.New())
-	apiDoc := swag.New(swag.Title("Arceus API Doc"))
-	apiDoc.AddEndpointFunc(home.Route, resource.Route)
-	apiDoc.RegisterMuxWithData(mux, false)
-	return mux
+// RandomStr 生成随机字符串
+func RandomStr(length int) string {
+	str := "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	b := []byte(str)
+	result := make([]byte, 0)
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	for i := 0; i < length; i++ {
+		result = append(result, b[r.Intn(len(b))])
+	}
+	return string(result)
 }

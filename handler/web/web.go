@@ -19,6 +19,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
+
 	"github.com/zc2638/arceus/static"
 	"github.com/zc2638/swag/swagger"
 )

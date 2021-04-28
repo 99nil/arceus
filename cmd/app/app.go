@@ -22,13 +22,12 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/zc2638/arceus/global"
-	"github.com/zc2638/arceus/handler/resource"
-
 	"github.com/pkgms/go/server"
-	"github.com/zc2638/arceus/handler"
-
 	"github.com/spf13/cobra"
+
+	"github.com/zc2638/arceus/global"
+	"github.com/zc2638/arceus/handler"
+	"github.com/zc2638/arceus/handler/resource"
 )
 
 var cfgFile string

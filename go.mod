@@ -9,6 +9,7 @@ require (
 	github.com/pkgms/go v0.0.0-20210419094325-147ab3e854a1 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/spf13/cobra v1.1.3 // indirect
+	github.com/tidwall/gjson v1.7.5 // indirect
 	github.com/zc2638/swag v1.0.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	k8s.io/apiextensions-apiserver v0.20.5 // indirect
