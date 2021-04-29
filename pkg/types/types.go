@@ -150,7 +150,7 @@ type JSONSchemaProps struct {
 	Enum                 []string                   `json:"enum,omitempty"`
 	MaxProperties        *int64                     `json:"maxProperties,omitempty"`
 	MinProperties        *int64                     `json:"minProperties,omitempty"`
-	Required             []string                   `json:"required,omitempty"`
+	Required             []string                   `json:"required"`
 	Items                *JSONSchemaProps           `json:"items,omitempty"`
 	AllOf                []JSONSchemaProps          `json:"allOf,omitempty"`
 	OneOf                []JSONSchemaProps          `json:"oneOf,omitempty"`
