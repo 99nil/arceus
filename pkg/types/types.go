@@ -56,7 +56,7 @@ type ArceusResourceDefinitionNames struct {
 	// The custom resources are served under `/apis/<group>/<version>/.../<plural>`.
 	// Must match the name of the CustomResourceDefinition (in the form `<names.plural>.<group>`).
 	// Must be all lowercase.
-	Plural string `json:"plural"`
+	Plural string `json:"plural,omitempty"`
 	// singular is the singular name of the resource. It must be all lowercase. Defaults to lowercased `kind`.
 	// +optional
 	Singular string `json:"singular,omitempty"`
@@ -101,7 +101,7 @@ type JSONSchemaProps struct {
 	// Schema represents a schema url.
 	Schema       string            `json:"$schema,omitempty"`
 	Ref          *string           `json:"$ref,omitempty"`
-	Description  string            `json:"description,omitempty"`
+	Description  string            `json:"description"`
 	Descriptions map[Locale]string `json:"descriptions,omitempty"`
 	Type         string            `json:"type,omitempty"`
 
