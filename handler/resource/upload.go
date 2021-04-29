@@ -191,10 +191,12 @@ func dealSchema(data gjson.Result) *types.JSONSchemaProps {
 	} else if data.IsObject() {
 		// object handle
 		props.Type = TypeObject
-		props.Properties = make(map[string]types.JSONSchemaProps)
 		obj := data.Map()
+		props.Properties = make(map[string]types.JSONSchemaProps)
+		props.Required = make([]string, 0, len(obj))
 		for k, v := range obj {
 			props.Properties[k] = *dealSchema(v)
+			props.Required = append(props.Required, k)
 		}
 	} else {
 		switch data.Type {
