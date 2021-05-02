@@ -15,6 +15,15 @@ limitations under the License.
 */
 package types
 
+const (
+	Group          = "arceus"
+	CustomGroup    = "custom." + Group
+	Version        = "v1"
+	Kind           = "CustomResourceDefine"
+	TemplateKind   = "Template"
+	QuickStartKind = "QuickStart"
+)
+
 type TypeMeta struct {
 	APIVersion string `json:"apiVersion,omitempty"`
 	Kind       string `json:"kind,omitempty"`
@@ -190,22 +199,4 @@ type JSONSchemaDefinitions map[string]JSONSchemaProps
 type ExternalDocumentation struct {
 	Description string `json:"description,omitempty" protobuf:"bytes,1,opt,name=description"`
 	URL         string `json:"url,omitempty" protobuf:"bytes,2,opt,name=url"`
-}
-
-type Template struct {
-	TypeMeta   `json:",inline"`
-	ObjectMeta `json:"metadata,omitempty"`
-	Spec       TemplateSpec `json:"spec,omitempty"`
-}
-
-type TemplateSpec struct {
-	Template []TemplateSpecTemplate `json:"template,omitempty"`
-}
-
-type TemplateSpecTemplate struct {
-	Name    string `json:"name,omitempty"`
-	Group   string `json:"group,omitempty"`
-	Kind    string `json:"kind,omitempty"`
-	Version string `json:"version,omitempty"`
-	Data    string `json:"data,omitempty"`
 }

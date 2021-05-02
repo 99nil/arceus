@@ -23,17 +23,17 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/zc2638/arceus/pkg/util"
-
 	"github.com/pkgms/go/ctr"
 	"github.com/tidwall/gjson"
 	apiextensionsV1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset/scheme"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/yaml"
 
 	"github.com/zc2638/arceus/global"
 	"github.com/zc2638/arceus/pkg/types"
+	"github.com/zc2638/arceus/pkg/util"
 )
 
 func upload() http.HandlerFunc {
@@ -66,7 +66,13 @@ func upload() http.HandlerFunc {
 }
 
 func GenerateFile(source []byte, targetDir string) error {
-	var data apiextensionsV1.CustomResourceDefinition
+	gvk := apiextensionsV1.SchemeGroupVersion.WithKind("CustomResourceDefinition")
+	data := apiextensionsV1.CustomResourceDefinition{
+		TypeMeta: v1.TypeMeta{
+			APIVersion: gvk.GroupVersion().String(),
+			Kind:       gvk.Kind,
+		},
+	}
 	if err := runtime.DecodeInto(scheme.Codecs.UniversalDecoder(), source, &data); err != nil {
 		return fmt.Errorf("resource parse failed: %s", err)
 	}
@@ -129,13 +135,19 @@ func generate() http.HandlerFunc {
 			return
 		}
 
+		kind := "kind-" + util.RandomStr(6)
 		data := types.ArceusResourceDefinition{
-			TypeMeta:   types.TypeMeta{},
-			ObjectMeta: types.ObjectMeta{},
+			TypeMeta: types.TypeMeta{
+				APIVersion: types.Group + "/" + types.Version,
+				Kind:       types.Kind,
+			},
+			ObjectMeta: types.ObjectMeta{
+				Name: kind + "." + types.CustomGroup,
+			},
 			Spec: types.ArceusResourceDefinitionSpec{
-				Group: "custom.arceus",
+				Group: types.CustomGroup,
 				Names: types.ArceusResourceDefinitionNames{
-					Kind: "kind-" + util.RandomStr(6),
+					Kind: kind,
 				},
 			},
 		}
@@ -161,7 +173,7 @@ func dealSchema(data gjson.Result) *types.JSONSchemaProps {
 	props := &types.JSONSchemaProps{}
 	if data.IsArray() {
 		// array handle
-		props.Type = TypeArray
+		props.Type = types.TypeArray
 		arr := data.Array()
 		if len(arr) == 0 {
 			return props
@@ -176,7 +188,7 @@ func dealSchema(data gjson.Result) *types.JSONSchemaProps {
 			if itemProps.Type != current.Type {
 				continue
 			}
-			if current.Type != TypeObject {
+			if current.Type != types.TypeObject {
 				itemProps = *dealSchema(v)
 				break
 			}
@@ -184,13 +196,13 @@ func dealSchema(data gjson.Result) *types.JSONSchemaProps {
 				set[ik] = iv
 			}
 		}
-		if itemProps.Type == TypeObject {
+		if itemProps.Type == types.TypeObject {
 			itemProps.Properties = set
 		}
 		props.Items = &itemProps
 	} else if data.IsObject() {
 		// object handle
-		props.Type = TypeObject
+		props.Type = types.TypeObject
 		obj := data.Map()
 		props.Properties = make(map[string]types.JSONSchemaProps)
 		props.Required = make([]string, 0, len(obj))
@@ -201,13 +213,13 @@ func dealSchema(data gjson.Result) *types.JSONSchemaProps {
 	} else {
 		switch data.Type {
 		case gjson.String:
-			props.Type = TypeString
+			props.Type = types.TypeString
 		case gjson.Number:
-			props.Type = TypeNumber
+			props.Type = types.TypeNumber
 		case gjson.True, gjson.False:
-			props.Type = TypeBoolean
+			props.Type = types.TypeBoolean
 		default:
-			props.Type = TypeString
+			props.Type = types.TypeString
 		}
 		val := data.String()
 		props.Default = &val

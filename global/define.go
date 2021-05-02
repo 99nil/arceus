@@ -19,4 +19,5 @@ const (
 	ResourcePath           = "static"
 	CustomResourcePath     = ResourcePath + "/custom"
 	KubernetesResourcePath = ResourcePath + "/kubernetes"
+	TemplateResourcePath   = ResourcePath + "/template"
 )

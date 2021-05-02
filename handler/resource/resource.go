@@ -16,14 +16,14 @@ limitations under the License.
 package resource
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io/fs"
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
+
+	"github.com/zc2638/arceus/pkg/types"
 
 	"github.com/pkgms/go/ctr"
 	apiextensionsV1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
@@ -34,72 +34,17 @@ import (
 	"github.com/zc2638/arceus/static"
 )
 
-type Resource struct {
-	Value    string     `json:"value"`
-	Label    string     `json:"label"`
-	Children []Resource `json:"children,omitempty"`
-}
-
-func buildResourceList(base fs.FS, basePath string) ([]Resource, error) {
-	dirs, err := fs.ReadDir(base, basePath)
-	if err != nil {
-		return nil, err
-	}
-	var list []Resource
-	for _, dir := range dirs {
-		if !dir.IsDir() {
-			continue
-		}
-		kindPath := filepath.Join(basePath, dir.Name())
-		kindDirs, err := fs.ReadDir(base, kindPath)
-		if err != nil {
-			continue
-		}
-		group := Resource{
-			Value: dir.Name(),
-			Label: dir.Name(),
-		}
-		for _, kindDir := range kindDirs {
-			if !kindDir.IsDir() {
-				continue
-			}
-			versionPath := filepath.Join(kindPath, kindDir.Name())
-			versionFiles, err := fs.ReadDir(base, versionPath)
-			if err != nil {
-				continue
-			}
-			kind := Resource{
-				Value: kindDir.Name(),
-				Label: kindDir.Name(),
-			}
-			for _, versionFile := range versionFiles {
-				if versionFile.IsDir() {
-					continue
-				}
-				version := strings.TrimSuffix(versionFile.Name(), ".yaml")
-				kind.Children = append(kind.Children, Resource{
-					Value: version,
-					Label: version,
-				})
-			}
-			group.Children = append(group.Children, kind)
-		}
-		list = append(list, group)
-	}
-	return list, nil
-}
-
 func list() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		typ := r.URL.Query().Get("type")
 		var (
-			result []Resource
+			result []types.Resource
 			err    error
 		)
 		if typ == "custom" {
-			result, err = buildResourceList(os.DirFS(global.ResourcePath), "custom")
+			result, err = types.BuildResourceList(os.DirFS(global.ResourcePath), "custom")
 		} else {
-			result, err = buildResourceList(static.Kubernetes, static.KubernetesDir)
+			result, err = types.BuildResourceList(static.Kubernetes, static.KubernetesDir)
 		}
 		if err != nil {
 			ctr.InternalError(w, err)
@@ -157,12 +102,7 @@ func tree() http.HandlerFunc {
 			return
 		}
 		apiVersion := data.Spec.Group + "/" + data.Spec.Versions[0].Name
-		node := BuildNode(data.Spec.Versions[0].Schema.OpenAPIV3Schema, nil, apiVersion, data.Spec.Names.Kind)
-		b, err := json.Marshal(node)
-		if err != nil {
-			ctr.InternalError(w, fmt.Errorf("resource parse failed: %s", err))
-			return
-		}
-		ctr.Bytes(w, b)
+		node := types.BuildNode(data.Spec.Versions[0].Schema.OpenAPIV3Schema, nil, apiVersion, data.Spec.Names.Kind)
+		ctr.OK(w, node)
 	}
 }

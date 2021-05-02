@@ -13,10 +13,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package resource
+package template
 
 import (
 	"net/http"
+
+	"github.com/zc2638/arceus/pkg/data/resp"
 
 	"github.com/zc2638/arceus/pkg/types"
 
@@ -24,67 +26,36 @@ import (
 	"github.com/zc2638/swag/swagger"
 )
 
-const tag = "resource"
+const tag = "template"
 
-// Route handle resource routing related
+// Route handle template routing related
 func Route(doc *swagger.API) {
 	doc.Tags = append(doc.Tags, swagger.Tag{
 		Name:        tag,
-		Description: "资源",
+		Description: "模板",
 	})
 	doc.AddEndpoint(
 		endpoint.New(
-			http.MethodGet, "/resource/list",
+			http.MethodGet, "/template",
 			endpoint.Handler(list()),
 			endpoint.Summary("资源列表"),
-			endpoint.Query("type", swagger.TypeString, "资源类型", false),
 			endpoint.ResponseSuccess(endpoint.Schema([]types.Resource{})),
 			endpoint.Tags(tag),
 		),
 		endpoint.New(
-			http.MethodGet, "/resource/info",
+			http.MethodGet, "/template/info",
 			endpoint.Handler(info()),
-			endpoint.Summary("资源详情"),
+			endpoint.Summary("模板详情"),
 			endpoint.Query("group", swagger.TypeString, "资源分组", true),
 			endpoint.Query("kind", swagger.TypeString, "资源名称", true),
 			endpoint.Query("version", swagger.TypeString, "资源版本", true),
-			endpoint.ResponseSuccess(),
+			endpoint.ResponseSuccess(endpoint.Schema([]resp.TemplateDataItem{})),
 			endpoint.Tags(tag),
 		),
 		endpoint.New(
-			http.MethodGet, "/resource/tree",
-			endpoint.Handler(tree()),
-			endpoint.Summary("资源树详情"),
-			endpoint.Query("group", swagger.TypeString, "资源分组", true),
-			endpoint.Query("kind", swagger.TypeString, "资源名称", true),
-			endpoint.Query("version", swagger.TypeString, "资源版本", true),
-			endpoint.Query("type", swagger.TypeString, "资源类型", false),
-			endpoint.ResponseSuccess(),
-			endpoint.Tags(tag),
-		),
-		endpoint.New(
-			http.MethodPost, "/resource/upload",
-			endpoint.Handler(upload()),
-			endpoint.Summary("资源上传"),
-			func(b *endpoint.Builder) {
-				if b.Endpoint.Parameters == nil {
-					b.Endpoint.Parameters = []swagger.Parameter{}
-				}
-				b.Endpoint.Parameters = append(b.Endpoint.Parameters, swagger.Parameter{
-					In:          "formData",
-					Type:        "file",
-					Name:        "file",
-					Description: "file to upload",
-					Required:    true,
-				})
-			},
-			endpoint.ResponseSuccess(),
-			endpoint.Tags(tag),
-		),
-		endpoint.New(
-			http.MethodPost, "/resource/generate",
-			endpoint.Handler(generate()),
-			endpoint.Summary("资源生成"),
+			http.MethodPost, "/template",
+			endpoint.Handler(create()),
+			endpoint.Summary("模板创建"),
 			func(b *endpoint.Builder) {
 				if b.Endpoint.Parameters == nil {
 					b.Endpoint.Parameters = []swagger.Parameter{}

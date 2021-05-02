@@ -13,15 +13,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package global
+package types
 
-import (
-	"github.com/zc2638/arceus/pkg/util"
-)
+type Template struct {
+	TypeMeta   `json:",inline"`
+	ObjectMeta `json:"metadata,omitempty"`
+	Spec       TemplateSpec `json:"spec"`
+}
 
-func Init() error {
-	if err := util.MkdirAll(CustomResourcePath); err != nil {
-		return err
-	}
-	return util.MkdirAll(TemplateResourcePath)
+type TemplateSpec struct {
+	Group    string                 `json:"group"`
+	Version  string                 `json:"version"`
+	Template []TemplateSpecTemplate `json:"template"`
+}
+
+type TemplateSpecTemplate struct {
+	Name       string `json:"name"`
+	APIVersion string `json:"apiVersion"`
+	Kind       string `json:"kind"`
+	Data       string `json:"data"`
 }

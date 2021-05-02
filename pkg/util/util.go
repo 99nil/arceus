@@ -17,6 +17,7 @@ package util
 
 import (
 	"math/rand"
+	"os"
 	"time"
 )
 
@@ -30,4 +31,14 @@ func RandomStr(length int) string {
 		result = append(result, b[r.Intn(len(b))])
 	}
 	return string(result)
+}
+
+func MkdirAll(dir string) error {
+	if _, err := os.Stat(dir); err != nil {
+		if !os.IsNotExist(err) {
+			return err
+		}
+		return os.MkdirAll(dir, os.ModePerm)
+	}
+	return nil
 }

@@ -13,15 +13,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package global
+package resp
 
-import (
-	"github.com/zc2638/arceus/pkg/util"
-)
+import "github.com/zc2638/arceus/pkg/types"
 
-func Init() error {
-	if err := util.MkdirAll(CustomResourcePath); err != nil {
-		return err
-	}
-	return util.MkdirAll(TemplateResourcePath)
+type TemplateDataItem struct {
+	Template string       `json:"template"`
+	Data     *types.TNode `json:"data"`
 }
