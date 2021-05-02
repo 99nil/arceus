@@ -24,6 +24,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/zc2638/arceus/pkg/util"
+
 	"github.com/pkgms/go/ctr"
 	apiextensionsV1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset/scheme"
@@ -138,9 +140,12 @@ func create() http.HandlerFunc {
 				return
 			}
 		}
-		newFilePath := filepath.Join(global.TemplateResourcePath,
-			template.Spec.Group, template.Name, template.Spec.Version+".yaml")
-		newFile, err := os.Create(newFilePath)
+		dir := filepath.Join(global.TemplateResourcePath, template.Spec.Group, template.Name)
+		if err := util.MkdirAll(dir); err != nil {
+			ctr.InternalError(w, err)
+			return
+		}
+		newFile, err := os.Create(filepath.Join(dir, template.Spec.Version+".yaml"))
 		if err != nil {
 			ctr.InternalError(w, err)
 			return

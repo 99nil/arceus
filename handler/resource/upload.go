@@ -86,13 +86,8 @@ func GenerateFile(source []byte, targetDir string) error {
 		return fmt.Errorf("version not found")
 	}
 	dir := filepath.Join(targetDir, data.Spec.Group, data.Spec.Names.Kind)
-	if _, err := os.Stat(dir); err != nil {
-		if !os.IsNotExist(err) {
-			return err
-		}
-		if err := os.MkdirAll(dir, os.ModePerm); err != nil {
-			return err
-		}
+	if err := util.MkdirAll(dir); err != nil {
+		return err
 	}
 	for k, v := range data.Spec.Versions {
 		newFile, err := os.Create(filepath.Join(dir, v.Name+".yaml"))
