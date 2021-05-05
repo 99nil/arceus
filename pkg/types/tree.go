@@ -38,6 +38,9 @@ const (
 	TypeBoolean = "boolean"
 )
 
+// TODO change to #
+const TreeNodeArray = "-"
+
 type TNodeDesc struct {
 	Locale string `json:"locale"` // 区域
 	Desc   string `json:"desc"`   // 描述
@@ -112,11 +115,10 @@ func BuildNode(prop *apiextensionsV1.JSONSchemaProps, node *TNode, extras ...str
 
 func buildArrayNode(prop *apiextensionsV1.JSONSchemaProps, pNode *TNode) *TNode {
 	v := prop.Items.Schema
-	name := "-"
 	node := &TNode{
-		Key:      pNode.Key + "." + name,
-		Name:     name,
-		Title:    name,
+		Key:      pNode.Key + "." + TreeNodeArray,
+		Name:     TreeNodeArray,
+		Title:    TreeNodeArray,
 		Required: v.Required,
 		Type:     v.Type,
 	}
