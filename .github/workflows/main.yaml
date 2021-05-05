@@ -1,0 +1,55 @@
+name: Main CI
+on:
+  push:
+    branches:
+      - main
+    tags:
+  pull_request:
+
+jobs:
+  verify:
+    name: Verify Project
+    strategy:
+      matrix:
+        go-version: [1.16.x]
+        platform: [ubuntu-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: go get -v -t -d ./...
+
+      - name: Go Test
+        run: go test -v ./...
+
+      - name: Install Lint And Check
+        uses: golangci/golangci-lint-action@v2.3.0
+        with:
+          version: latest
+
+  build:
+    name: Build Project
+    needs: verify
+    strategy:
+      matrix:
+        go-version: [1.16.x]
+        platform: [ubuntu-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: go build -ldflags="-s -w" -installsuffix cgo -o arceus github.com/zc2638/arceus/cmd
