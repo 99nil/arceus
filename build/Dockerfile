@@ -1,3 +1,8 @@
+FROM node:15.5 as front
+WORKDIR /work
+ADD . .
+RUN make ui
+
 FROM golang:1.16-alpine as builder
 ENV GOPROXY=https://goproxy.io,direct
 ENV GO111MODULE=on
@@ -9,6 +14,7 @@ RUN go mod download
 
 WORKDIR /work
 ADD . .
+COPY --from=front /work/static/ui /work/static/ui
 RUN GOOS=linux CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix cgo -o arceus github.com/zc2638/arceus/cmd
 
 FROM gruebel/upx:latest as upx

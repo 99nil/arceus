@@ -18,8 +18,6 @@ package template
 import (
 	"net/http"
 
-	"github.com/zc2638/arceus/pkg/data/resp"
-
 	"github.com/zc2638/arceus/pkg/types"
 
 	"github.com/zc2638/swag/endpoint"
@@ -49,7 +47,7 @@ func Route(doc *swagger.API) {
 			endpoint.Query("group", swagger.TypeString, "资源分组", true),
 			endpoint.Query("kind", swagger.TypeString, "资源名称", true),
 			endpoint.Query("version", swagger.TypeString, "资源版本", true),
-			endpoint.ResponseSuccess(endpoint.Schema([]resp.TemplateDataItem{})),
+			endpoint.ResponseSuccess(),
 			endpoint.Tags(tag),
 		),
 		endpoint.New(

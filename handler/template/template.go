@@ -27,14 +27,10 @@ import (
 	"github.com/zc2638/arceus/pkg/util"
 
 	"github.com/pkgms/go/ctr"
-	apiextensionsV1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
-	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset/scheme"
-	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"sigs.k8s.io/yaml"
 
 	"github.com/zc2638/arceus/global"
-	"github.com/zc2638/arceus/pkg/data/resp"
 	"github.com/zc2638/arceus/pkg/types"
 	"github.com/zc2638/arceus/static"
 )
@@ -67,32 +63,7 @@ func info() http.HandlerFunc {
 			ctr.InternalError(w, err)
 			return
 		}
-
-		var result = make([]resp.TemplateDataItem, 0, len(template.Spec.Template))
-		for _, v := range template.Spec.Template {
-			gvk := schema.FromAPIVersionAndKind(v.APIVersion, v.Kind)
-			filePath := filepath.Join(gvk.Group, gvk.Kind, gvk.Version) + ".yaml"
-			baseFilePath := filepath.Join(static.KubernetesDir, filePath)
-			fileData, err := fs.ReadFile(static.Kubernetes, baseFilePath)
-			if os.IsNotExist(err) {
-				fileData, err = fs.ReadFile(os.DirFS(global.CustomResourcePath), filePath)
-			}
-			if err != nil {
-				continue
-			}
-			var data apiextensionsV1.CustomResourceDefinition
-			if err := runtime.DecodeInto(scheme.Codecs.UniversalDecoder(), fileData, &data); err != nil {
-				ctr.InternalError(w, fmt.Errorf("resource parse failed: %s", err))
-				return
-			}
-			apiVersion := data.Spec.Group + "/" + data.Spec.Versions[0].Name
-			node := types.BuildNode(data.Spec.Versions[0].Schema.OpenAPIV3Schema, nil, apiVersion, data.Spec.Names.Kind)
-			result = append(result, resp.TemplateDataItem{
-				Template: v.Data,
-				Data:     node,
-			})
-		}
-		ctr.OK(w, result)
+		ctr.OK(w, template)
 	}
 }
 
