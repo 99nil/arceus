@@ -24,7 +24,7 @@ import (
 	"path/filepath"
 
 	"github.com/pkgms/go/ctr"
-	"github.com/tidwall/gjson"
+	"github.com/zc2638/arceus/pkg/types"
 	apiextensionsV1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset/scheme"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -32,7 +32,6 @@ import (
 	"sigs.k8s.io/yaml"
 
 	"github.com/zc2638/arceus/global"
-	"github.com/zc2638/arceus/pkg/types"
 	"github.com/zc2638/arceus/pkg/util"
 )
 
@@ -56,7 +55,8 @@ func upload() http.HandlerFunc {
 			if len(vb) == 0 {
 				continue
 			}
-			if err := GenerateFile(vb, global.CustomResourcePath); err != nil {
+			vb, _ = convertToCustom(vb)
+			if err = GenerateFile(vb, global.CustomResourcePath); err != nil {
 				ctr.BadRequest(w, err)
 				return
 			}
@@ -110,114 +110,13 @@ func GenerateFile(source []byte, targetDir string) error {
 	return nil
 }
 
-func generate() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		file, _, err := r.FormFile("file")
-		if err != nil {
-			ctr.BadRequest(w, err)
-			return
+func convertToCustom(source []byte) ([]byte, bool) {
+	arr := bytes.Split(source, []byte("\n"))
+	for k, v := range arr {
+		if bytes.HasPrefix(v, []byte("apiVersion: "+types.Group+"/"+types.Version)) {
+			arr[k] = []byte("apiVersion: apiextensions.k8s.io/v1")
+			return bytes.Join(arr, []byte("\n")), true
 		}
-		defer file.Close()
-
-		fileData, err := io.ReadAll(file)
-		if err != nil {
-			ctr.InternalError(w, err)
-			return
-		}
-		jsonData, err := yaml.YAMLToJSON(fileData)
-		if err != nil {
-			ctr.BadRequest(w, err)
-			return
-		}
-
-		kind := "kind-" + util.RandomStr(6)
-		data := types.ArceusResourceDefinition{
-			TypeMeta: types.TypeMeta{
-				APIVersion: types.Group + "/" + types.Version,
-				Kind:       types.Kind,
-			},
-			ObjectMeta: types.ObjectMeta{
-				Name: kind + "." + types.CustomGroup,
-			},
-			Spec: types.ArceusResourceDefinitionSpec{
-				Group: types.CustomGroup,
-				Names: types.ArceusResourceDefinitionNames{
-					Kind: kind,
-				},
-			},
-		}
-		result := gjson.ParseBytes(jsonData)
-		jsonSchema := dealSchema(result)
-		version := types.ArceusResourceDefinitionVersion{}
-		version.Name = "v1"
-		version.Schema = &types.ArceusResourceValidation{
-			OpenAPIV3Schema: jsonSchema,
-		}
-		data.Spec.Versions = []types.ArceusResourceDefinitionVersion{version}
-		// 转yaml
-		b, err := yaml.Marshal(&data)
-		if err != nil {
-			ctr.InternalError(w, err)
-			return
-		}
-		ctr.Bytes(w, b)
 	}
-}
-
-func dealSchema(data gjson.Result) *types.JSONSchemaProps {
-	props := &types.JSONSchemaProps{}
-	if data.IsArray() {
-		// array handle
-		props.Type = types.TypeArray
-		arr := data.Array()
-		if len(arr) == 0 {
-			return props
-		}
-		set := make(map[string]types.JSONSchemaProps)
-		var itemProps types.JSONSchemaProps
-		for _, v := range arr {
-			current := dealSchema(v)
-			if itemProps.Type == "" {
-				itemProps.Type = current.Type
-			}
-			if itemProps.Type != current.Type {
-				continue
-			}
-			if current.Type != types.TypeObject {
-				itemProps = *dealSchema(v)
-				break
-			}
-			for ik, iv := range current.Properties {
-				set[ik] = iv
-			}
-		}
-		if itemProps.Type == types.TypeObject {
-			itemProps.Properties = set
-		}
-		props.Items = &itemProps
-	} else if data.IsObject() {
-		// object handle
-		props.Type = types.TypeObject
-		obj := data.Map()
-		props.Properties = make(map[string]types.JSONSchemaProps)
-		props.Required = make([]string, 0, len(obj))
-		for k, v := range obj {
-			props.Properties[k] = *dealSchema(v)
-			props.Required = append(props.Required, k)
-		}
-	} else {
-		switch data.Type {
-		case gjson.String:
-			props.Type = types.TypeString
-		case gjson.Number:
-			props.Type = types.TypeNumber
-		case gjson.True, gjson.False:
-			props.Type = types.TypeBoolean
-		default:
-			props.Type = types.TypeString
-		}
-		val := data.String()
-		props.Default = &val
-	}
-	return props
+	return source, false
 }

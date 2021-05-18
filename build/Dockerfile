@@ -26,9 +26,10 @@ FROM alpine:3.6 as alpine
 RUN apk add -U --no-cache ca-certificates
 
 FROM alpine
+MAINTAINER zc
 LABEL maintainer="zc" \
     email="zc2638@qq.com" \
-    version="v0.3.0"
+    version="v0.4"
 
 ENV TS="Asia/Shanghai"
 COPY --from=alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
