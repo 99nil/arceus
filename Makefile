@@ -1,6 +1,6 @@
 .PHONY: ui
 ui:
-	./build/update.sh
+	./build/ui.sh
 
 .PHONY: docker
 docker:
@@ -9,3 +9,7 @@ docker:
 .PHONY: test
 test:
 	golangci-lint run ./... && go test ./...
+
+.PHONY: build
+build:
+	./build/build.sh

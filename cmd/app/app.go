@@ -43,6 +43,7 @@ func NewServerCommand() *cobra.Command {
 		cfgFilePath = "config/config.yaml"
 	}
 	cmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", cfgFilePath, "config file (default is $HOME/config.yaml)")
+	cmd.AddCommand(versionCommand())
 	return cmd
 }
 

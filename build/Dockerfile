@@ -7,6 +7,8 @@ FROM golang:1.16-alpine as builder
 ENV GOPROXY=https://goproxy.io,direct
 ENV GO111MODULE=on
 
+RUN apk add gcc g++ make git libffi-dev openssl-dev libtool
+
 WORKDIR /go/cache
 ADD go.mod .
 ADD go.sum .
@@ -15,7 +17,7 @@ RUN go mod download
 WORKDIR /work
 ADD . .
 COPY --from=front /work/static/ui /work/static/ui
-RUN GOOS=linux CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix cgo -o arceus github.com/zc2638/arceus/cmd
+RUN GOOS=linux CGO_ENABLED=0 make build
 
 FROM gruebel/upx:latest as upx
 WORKDIR /work
@@ -29,7 +31,7 @@ FROM alpine
 MAINTAINER zc
 LABEL maintainer="zc" \
     email="zc2638@qq.com" \
-    version="v0.4"
+    version="v0.5"
 
 ENV TS="Asia/Shanghai"
 COPY --from=alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/

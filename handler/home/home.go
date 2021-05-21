@@ -18,6 +18,8 @@ package home
 import (
 	"net/http"
 
+	"github.com/zc2638/arceus/pkg/version"
+
 	"github.com/pkgms/go/ctr"
 
 	"github.com/zc2638/swag/endpoint"
@@ -40,6 +42,14 @@ func Route(doc *swagger.API) {
 				//ctr.OK(w, "Hello Arceus!")
 			})),
 			endpoint.ResponseSuccess(),
+			endpoint.Tags(tag),
+		),
+		endpoint.New(
+			http.MethodGet, "/version",
+			endpoint.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				ctr.OK(w, version.Get())
+			})),
+			endpoint.ResponseSuccess(endpoint.Schema(version.Version{})),
 			endpoint.Tags(tag),
 		),
 	)

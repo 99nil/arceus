@@ -1,6 +1,9 @@
 #!/bin/bash
 
-tmpDir=_tmp
+set -o errexit
+set -u
+
+readonly tmpDir=_tmp
 rm -rf $tmpDir && mkdir -p $tmpDir
 cd $tmpDir || exit
 git clone --depth=1 https://github.com/zc2638/arceus-ui.git arceus-ui
