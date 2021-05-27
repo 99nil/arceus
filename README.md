@@ -9,6 +9,12 @@ Pokémon - arceus
 
 Structured configuration generator.
 
+## TODO 
+
+- 命令行模式
+- 接口模式优化
+- 格式转换(e.g. json <=> yaml)
+
 ## Run
 ### Local
 ```shell

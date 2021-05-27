@@ -31,7 +31,7 @@ FROM alpine
 MAINTAINER zc
 LABEL maintainer="zc" \
     email="zc2638@qq.com" \
-    version="v0.5"
+    version="v0.6"
 
 ENV TS="Asia/Shanghai"
 COPY --from=alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
