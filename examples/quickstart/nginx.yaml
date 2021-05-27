@@ -1,0 +1,8 @@
+apiVersion: arceus/v1beta
+kind: QuickStart
+metadata:
+  name: test
+spec:
+  data: '{"type":"ClusterIP","match":{"key":"node-role.kubernetes.io/edge","operator":"NotExists"}}'
+  rule:
+    - nginx-rule

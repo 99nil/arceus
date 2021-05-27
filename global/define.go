@@ -20,4 +20,13 @@ const (
 	CustomResourcePath     = ResourcePath + "/custom"
 	KubernetesResourcePath = ResourcePath + "/kubernetes"
 	TemplateResourcePath   = ResourcePath + "/template"
+	RuleResourcePath       = ResourcePath + "/rule"
+)
+
+const (
+	KindNull           = ""
+	KindTemplate       = "Template"
+	KindQuickStart     = "QuickStart"
+	KindQuickStartRule = "QuickStartRule"
+	KindCustom         = "CustomResourceDefinition"
 )

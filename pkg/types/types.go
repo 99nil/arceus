@@ -24,6 +24,12 @@ const (
 	QuickStartKind = "QuickStart"
 )
 
+type JSONOperation struct {
+	Op    string      `json:"op"` // add|remove|replace
+	Path  string      `json:"path"`
+	Value interface{} `json:"value"`
+}
+
 type TypeMeta struct {
 	APIVersion string `json:"apiVersion,omitempty"`
 	Kind       string `json:"kind,omitempty"`
@@ -199,4 +205,77 @@ type JSONSchemaDefinitions map[string]JSONSchemaProps
 type ExternalDocumentation struct {
 	Description string `json:"description,omitempty" protobuf:"bytes,1,opt,name=description"`
 	URL         string `json:"url,omitempty" protobuf:"bytes,2,opt,name=url"`
+}
+
+type QuickStartRule struct {
+	TypeMeta   `json:",inline"`
+	ObjectMeta `json:"metadata,omitempty"`
+	// spec describes how the user wants the resources to appear
+	Spec QuickStartRuleSpec `json:"spec"`
+}
+
+type QuickStartRuleSpec struct {
+	Input     JSONSchemaProps      `json:"input"`
+	Templates []RuleTemplateDefine `json:"templates"`
+	Relate    []RuleRelate         `json:"relate"`
+	Settings  []RuleSetting        `json:"settings"`
+}
+
+type RuleTemplateDefine struct {
+	Name     string `json:"name"`
+	Group    string `json:"group"`
+	Version  string `json:"version"`
+	Template string `json:"template"`
+}
+
+type RuleRelate struct {
+	From RuleRelateFrom `json:"from"`
+	To   RuleRelateTo   `json:"to"`
+}
+
+type RuleRelateFrom struct {
+	TypeMeta
+	Field string `json:"field"`
+}
+
+type RuleRelateTo struct {
+	TypeMeta
+	Fields []string `json:"fields"`
+}
+
+type RuleSetting struct {
+	Type    SettingType     `json:"type"`
+	Path    string          `json:"path"`
+	Value   string          `json:"value"`
+	Targets []SettingTarget `json:"targets"`
+}
+
+type SettingTarget struct {
+	Name   string               `json:"name"`   // template name
+	Sub    string               `json:"sub"`    // template sub resource name
+	Fields []SettingTargetField `json:"fields"` // field path
+}
+
+type SettingTargetField struct {
+	Path string `json:"path"`
+	Op   string `json:"op"`
+}
+
+type SettingType string
+
+const (
+	SettingTypeInput SettingType = "input"
+	SettingTypeValue SettingType = "value"
+)
+
+type QuickStart struct {
+	TypeMeta   `json:",inline"`
+	ObjectMeta `json:"metadata,omitempty"`
+	// spec describes how the user wants the resources to appear
+	Spec QuickStartSpec `json:"spec"`
+}
+
+type QuickStartSpec struct {
+	Rule []string `json:"rule"`
+	Data string   `json:"data"`
 }

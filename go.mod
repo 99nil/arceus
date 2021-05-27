@@ -3,6 +3,7 @@ module github.com/zc2638/arceus
 go 1.16
 
 require (
+	github.com/evanphx/json-patch v4.9.0+incompatible // indirect
 	github.com/go-chi/chi v1.5.4 // indirect
 	github.com/go-chi/cors v1.2.0 // indirect
 	github.com/pkgms/go v0.0.0-20210419094325-147ab3e854a1 // indirect

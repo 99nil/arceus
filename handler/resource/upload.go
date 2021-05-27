@@ -17,8 +17,10 @@ package resource
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -29,10 +31,12 @@ import (
 	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset/scheme"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"sigs.k8s.io/yaml"
 
 	"github.com/zc2638/arceus/global"
 	"github.com/zc2638/arceus/pkg/util"
+	"github.com/zc2638/arceus/static"
 )
 
 func upload() http.HandlerFunc {
@@ -55,8 +59,16 @@ func upload() http.HandlerFunc {
 			if len(vb) == 0 {
 				continue
 			}
-			vb, _ = convertToCustom(vb)
-			if err = GenerateFile(vb, global.CustomResourcePath); err != nil {
+			switch checkKind(vb) {
+			case global.KindQuickStart:
+				err = uploadResource(vb, global.RuleResourcePath)
+			case global.KindTemplate:
+				err = uploadTemplate(vb)
+			default:
+				vb, _ = convertToCustom(vb)
+				err = GenerateFile(vb, global.CustomResourcePath)
+			}
+			if err != nil {
 				ctr.BadRequest(w, err)
 				return
 			}
@@ -119,4 +131,75 @@ func convertToCustom(source []byte) ([]byte, bool) {
 		}
 	}
 	return source, false
+}
+
+func checkKind(source []byte) string {
+	arr := bytes.Split(source, []byte("\n"))
+	kindPrefix := "kind: "
+	for _, v := range arr {
+		if bytes.HasPrefix(v, []byte(kindPrefix+global.KindQuickStart)) {
+			return global.KindQuickStart
+		}
+		if bytes.HasPrefix(v, []byte(kindPrefix+global.KindTemplate)) {
+			return global.KindTemplate
+		}
+	}
+	return global.KindNull
+}
+
+func uploadResource(source []byte, targetDir string) error {
+	var data types.QuickStart
+	if err := yaml.Unmarshal(source, &data); err != nil {
+		return err
+	}
+	newFile, err := os.Create(filepath.Join(targetDir, data.Name+".yaml"))
+	if err != nil {
+		return fmt.Errorf("create file failed: %s", err)
+	}
+	defer newFile.Close()
+
+	if _, err = newFile.Write(source); err != nil {
+		return fmt.Errorf("save file failed: %s", err)
+	}
+	return nil
+}
+
+func uploadTemplate(source []byte) error {
+	var template types.Template
+	if err := yaml.Unmarshal(source, &template); err != nil {
+		return err
+	}
+	if template.Kind != "Template" {
+		return errors.New("kind must be Template")
+	}
+	if len(template.Spec.Template) == 0 {
+		return errors.New("spec.template is necessary")
+	}
+	for k, v := range template.Spec.Template {
+		if v.Name == "" {
+			return fmt.Errorf("spec.template.%v.name is necessary", k)
+		}
+		gvk := schema.FromAPIVersionAndKind(v.APIVersion, v.Kind)
+		filePath := filepath.Join(gvk.Group, gvk.Kind, gvk.Version) + ".yaml"
+		baseFilePath := filepath.Join(static.KubernetesDir, filePath)
+		_, err := fs.Stat(static.Kubernetes, baseFilePath)
+		if os.IsNotExist(err) {
+			_, err = fs.Stat(os.DirFS(global.CustomResourcePath), filePath)
+		}
+		if err != nil {
+			return fmt.Errorf("resource (%s) not exist", gvk.String())
+		}
+	}
+	dir := filepath.Join(global.TemplateResourcePath, template.Spec.Group, template.Name)
+	if err := util.MkdirAll(dir); err != nil {
+		return err
+	}
+	newFile, err := os.Create(filepath.Join(dir, template.Spec.Version+".yaml"))
+	if err != nil {
+		return err
+	}
+	defer newFile.Close()
+
+	_, err = newFile.Write(source)
+	return err
 }

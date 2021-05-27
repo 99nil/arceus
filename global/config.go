@@ -23,5 +23,8 @@ func Init() error {
 	if err := util.MkdirAll(CustomResourcePath); err != nil {
 		return err
 	}
-	return util.MkdirAll(TemplateResourcePath)
+	if err := util.MkdirAll(TemplateResourcePath); err != nil {
+		return err
+	}
+	return util.MkdirAll(RuleResourcePath)
 }

@@ -18,6 +18,8 @@ package handler
 import (
 	"net/http"
 
+	"github.com/zc2638/arceus/handler/quick"
+
 	"github.com/zc2638/arceus/handler/template"
 
 	"github.com/go-chi/chi"
@@ -39,7 +41,12 @@ func New() http.Handler {
 	)
 	mux.Mount("/web", web.New())
 	apiDoc := swag.New(swag.Title("Arceus API Doc"))
-	apiDoc.AddEndpointFunc(home.Route, resource.Route, template.Route)
+	apiDoc.AddEndpointFunc(
+		home.Route,
+		resource.Route,
+		template.Route,
+		quick.Route,
+	)
 	apiDoc.RegisterMuxWithData(mux, false)
 	return mux
 }

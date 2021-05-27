@@ -46,3 +46,10 @@ spec:
               containers:
                 - name: nginx
                   image: 'nginx:latest'
+              affinity:
+                nodeAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    nodeSelectorTerms:
+                      - matchExpressions:
+                          - key: node-role.kubernetes.io/edge
+                            operator: Exists
