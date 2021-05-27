@@ -4,10 +4,6 @@
 package quick
 
 import (
-	"testing"
-
-	"sigs.k8s.io/yaml"
-
 	"github.com/zc2638/arceus/pkg/types"
 )
 
@@ -71,22 +67,22 @@ var (
 	}
 )
 
-func TestParseSingle(t *testing.T) {
-	jsonData, err := yaml.YAMLToJSON([]byte(data.Spec.Data))
-	if err != nil {
-		t.Fatal(err)
-	}
-	result, err := ParseSingle(jsonData, &rule)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Log(result)
-}
-
-func TestParse(t *testing.T) {
-	result, err := Parse(&data)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Log(result)
-}
+//func TestParseSingle(t *testing.T) {
+//	jsonData, err := yaml.YAMLToJSON([]byte(data.Spec.Data))
+//	if err != nil {
+//		t.Fatal(err)
+//	}
+//	result, err := ParseSingle(jsonData, &rule)
+//	if err != nil {
+//		t.Fatal(err)
+//	}
+//	t.Log(result)
+//}
+//
+//func TestParse(t *testing.T) {
+//	result, err := Parse(&data)
+//	if err != nil {
+//		t.Fatal(err)
+//	}
+//	t.Log(result)
+//}
