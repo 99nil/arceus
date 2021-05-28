@@ -215,6 +215,8 @@ type QuickStartRule struct {
 }
 
 type QuickStartRuleSpec struct {
+	Group     string               `json:"group"`
+	Version   string               `json:"version"`
 	Input     JSONSchemaProps      `json:"input"`
 	Templates []RuleTemplateDefine `json:"templates"`
 	Relate    []RuleRelate         `json:"relate"`
@@ -276,6 +278,12 @@ type QuickStart struct {
 }
 
 type QuickStartSpec struct {
-	Rule []string `json:"rule"`
-	Data string   `json:"data"`
+	Rule []QuickStartSpecRule `json:"rule"`
+	Data string               `json:"data"`
+}
+
+type QuickStartSpecRule struct {
+	Group   string `json:"group"`
+	Version string `json:"version"`
+	Name    string `json:"name"`
 }

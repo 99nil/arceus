@@ -3,6 +3,8 @@ kind: QuickStartRule
 metadata:
   name: nginx-rule
 spec:
+  group: arceus
+  version: v1
   templates:
     - name: nginx-temp
       group: arceus

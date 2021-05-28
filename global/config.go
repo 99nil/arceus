@@ -16,10 +16,20 @@ limitations under the License.
 package global
 
 import (
+	"github.com/pkgms/go/ctr"
+	"github.com/sirupsen/logrus"
 	"github.com/zc2638/arceus/pkg/util"
 )
 
 func Init() error {
+	logrus.SetFormatter(&logrus.TextFormatter{
+		ForceColors:            true,
+		DisableLevelTruncation: true,
+		PadLevelText:           true,
+		FullTimestamp:          true,
+		TimestampFormat:        "2006/01/02 15:04:05",
+	})
+	ctr.InitLog(logrus.StandardLogger())
 	if err := util.MkdirAll(CustomResourcePath); err != nil {
 		return err
 	}

@@ -33,6 +33,13 @@ func Route(doc *swagger.API) {
 	})
 	doc.AddEndpoint(
 		endpoint.New(
+			http.MethodGet, "/rule/list",
+			endpoint.Handler(list()),
+			endpoint.Summary("规则列表"),
+			endpoint.ResponseSuccess(endpoint.Schema([]types.Resource{})),
+			endpoint.Tags(tag),
+		),
+		endpoint.New(
 			http.MethodPost, "/quickstart",
 			endpoint.Handler(quickstart()),
 			endpoint.Summary("快速开始"),

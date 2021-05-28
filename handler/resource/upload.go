@@ -60,8 +60,8 @@ func upload() http.HandlerFunc {
 				continue
 			}
 			switch checkKind(vb) {
-			case global.KindQuickStart:
-				err = uploadResource(vb, global.RuleResourcePath)
+			case global.KindQuickStartRule:
+				err = uploadQuickStart(vb)
 			case global.KindTemplate:
 				err = uploadTemplate(vb)
 			default:
@@ -147,20 +147,29 @@ func checkKind(source []byte) string {
 	return global.KindNull
 }
 
-func uploadResource(source []byte, targetDir string) error {
-	var data types.QuickStart
+func uploadQuickStart(source []byte) error {
+	var data types.QuickStartRule
 	if err := yaml.Unmarshal(source, &data); err != nil {
 		return err
 	}
-	newFile, err := os.Create(filepath.Join(targetDir, data.Name+".yaml"))
+	if len(data.Spec.Templates) == 0 {
+		return errors.New("spec.templates is necessary")
+	}
+	if len(data.Spec.Settings) == 0 {
+		return errors.New("spec.settings is necessary")
+	}
+
+	dir := filepath.Join(global.RuleResourcePath, data.Spec.Group, data.Name)
+	if err := util.MkdirAll(dir); err != nil {
+		return err
+	}
+	newFile, err := os.Create(filepath.Join(dir, data.Spec.Version+".yaml"))
 	if err != nil {
-		return fmt.Errorf("create file failed: %s", err)
+		return err
 	}
 	defer newFile.Close()
 
-	if _, err = newFile.Write(source); err != nil {
-		return fmt.Errorf("save file failed: %s", err)
-	}
+	_, err = newFile.Write(source)
 	return nil
 }
 

@@ -32,6 +32,17 @@ import (
 	"github.com/zc2638/arceus/pkg/types"
 )
 
+func list() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		result, err := types.BuildResourceList(os.DirFS(global.ResourcePath), "rule")
+		if err != nil {
+			ctr.InternalError(w, err)
+			return
+		}
+		ctr.OK(w, result)
+	}
+}
+
 func quickstart() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var data types.QuickStart
@@ -51,8 +62,8 @@ func quickstart() http.HandlerFunc {
 // 根据规则名称，获取所有规则资源
 func getRules(data *types.QuickStart) ([]types.QuickStartRule, error) {
 	rules := make([]types.QuickStartRule, 0, len(data.Spec.Rule))
-	for _, name := range data.Spec.Rule {
-		filePath := name + ".yaml"
+	for _, rule := range data.Spec.Rule {
+		filePath := filepath.Join(rule.Group, rule.Name, rule.Version) + ".yaml"
 		fileData, err := fs.ReadFile(os.DirFS(global.RuleResourcePath), filePath)
 		if err != nil {
 			return nil, err

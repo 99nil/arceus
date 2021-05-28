@@ -1,0 +1,42 @@
+apiVersion: arceus/v1beta
+kind: QuickStartRule
+metadata:
+  name: app-rule
+spec:
+  group: arceus
+  version: v1
+  templates:
+    - name: nginx-temp
+      group: arceus
+      version: v1
+      template: nginx
+  settings:
+    - path: /port
+      targets:
+        - name: nginx-temp
+          sub: service
+          fields:
+            - path: /spec/ports/0/nodePort
+    - path: /image
+      targets:
+        - name: nginx-temp
+          sub: deploy
+          fields:
+            - path: /spec/template/spec/containers/0/image
+    - path: /name
+      targets:
+        - name: nginx-temp
+          sub: service
+          fields:
+            - path: /metadata/name
+            - path: /metadata/labels/app
+            - path: /spec/selector/app
+        - name: nginx-temp
+          sub: deploy
+          fields:
+            - path: /metadata/name
+            - path: /metadata/labels/app
+            - path: /spec/selector/matchLabels/app
+            - path: /spec/template/metadata/name
+            - path: /spec/template/metadata/labels/app
+            - path: /spec/template/spec/containers/0/name

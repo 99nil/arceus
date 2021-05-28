@@ -59,8 +59,12 @@ var (
 			Name: "test",
 		},
 		Spec: types.QuickStartSpec{
-			Rule: []string{
-				"nginx-rule",
+			Rule: []types.QuickStartSpecRule{
+				{
+					Group:   "arceus",
+					Version: "v1",
+					Name:    "nginx-rule",
+				},
 			},
 			Data: `{"type": "ClusterIP", "match": {"key": "node-role.kubernetes.io/edge", "operator": "NotExists"}}`,
 		},

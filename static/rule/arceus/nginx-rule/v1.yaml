@@ -1,8 +1,10 @@
 apiVersion: arceus/v1beta
-kind: QuickStart
+kind: QuickStartRule
 metadata:
   name: nginx-rule
 spec:
+  group: arceus
+  version: v1
   templates:
     - name: nginx-temp
       group: arceus
