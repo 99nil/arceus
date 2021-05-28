@@ -3,6 +3,6 @@ kind: QuickStart
 metadata:
   name: test
 spec:
-  data: '{"type":"ClusterIP","match":{"key":"node-role.kubernetes.io/edge","operator":"NotExists"}}'
+  data: '{"type":"ClusterIP","match":[{"key":"node-role.kubernetes.io/edge","operator":"NotExists"}]}'
   rule:
     - nginx-rule
