@@ -1,5 +1,5 @@
 apiVersion: arceus/v1beta
-kind: QuickStart
+kind: QuickStartRule
 metadata:
   name: nginx-rule
 spec:

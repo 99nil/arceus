@@ -137,8 +137,8 @@ func checkKind(source []byte) string {
 	arr := bytes.Split(source, []byte("\n"))
 	kindPrefix := "kind: "
 	for _, v := range arr {
-		if bytes.HasPrefix(v, []byte(kindPrefix+global.KindQuickStart)) {
-			return global.KindQuickStart
+		if bytes.HasPrefix(v, []byte(kindPrefix+global.KindQuickStartRule)) {
+			return global.KindQuickStartRule
 		}
 		if bytes.HasPrefix(v, []byte(kindPrefix+global.KindTemplate)) {
 			return global.KindTemplate
