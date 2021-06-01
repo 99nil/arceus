@@ -133,29 +133,36 @@ func ParseSingle(data []byte, rule *types.QuickStartRule) ([]interface{}, error)
 		// 根据path获取值
 		path := strings.TrimPrefix(v.Path, "/")
 		path = strings.ReplaceAll(path, "/", ".")
-		patchValue := jsonResult.Get(path).Value()
+		patchResult := jsonResult.Get(path)
+		if !patchResult.Exists() {
+			continue
+		}
+		patchValue := patchResult.Value()
+
 		// 根据target填充值
 		for _, target := range v.Targets {
 			templateData := templates[target.Name]
-			var ops []types.JSONOperation
+			var patchs []jsonpatch.Patch
 			for _, field := range target.Fields {
-				op := "replace"
-				if field.Op != "" {
-					op = field.Op
+				ops := []types.JSONOperation{
+					{
+						Op:    "replace",
+						Path:  field.Path,
+						Value: patchValue,
+					},
 				}
-				ops = append(ops, types.JSONOperation{
-					Op:    op,
-					Path:  field.Path,
-					Value: patchValue,
-				})
-			}
-			marshal, err := json.Marshal(&ops)
-			if err != nil {
-				return nil, err
-			}
-			patch, err := jsonpatch.DecodePatch(marshal)
-			if err != nil {
-				return nil, err
+				if field.Op != "" {
+					ops[0].Op = field.Op
+				}
+				marshal, err := json.Marshal(&ops)
+				if err != nil {
+					return nil, err
+				}
+				patch, err := jsonpatch.DecodePatch(marshal)
+				if err != nil {
+					return nil, err
+				}
+				patchs = append(patchs, patch)
 			}
 
 			// 判断sub，如果不存在处理全部
@@ -165,12 +172,14 @@ func ParseSingle(data []byte, rule *types.QuickStartRule) ([]interface{}, error)
 					target.Sub: templateData[target.Sub],
 				}
 			}
-			for k, v := range initialData {
-				patchData, err := patch.Apply(v)
-				if err != nil {
-					continue
+			for _, p := range patchs {
+				for k, v := range initialData {
+					patchData, err := p.Apply(v)
+					if err != nil {
+						continue
+					}
+					templates[target.Name][k] = patchData
 				}
-				templates[target.Name][k] = patchData
 			}
 		}
 	}

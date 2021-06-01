@@ -1,4 +1,0 @@
-type: ClusterIP
-match:
-  - key: node-role.kubernetes.io/edge
-    operator: NotExists
