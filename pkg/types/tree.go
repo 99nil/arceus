@@ -18,6 +18,7 @@ package types
 import (
 	"bytes"
 	"sort"
+	"strconv"
 	"strings"
 
 	apiextensionsV1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
@@ -84,7 +85,8 @@ func BuildNode(prop *apiextensionsV1.JSONSchemaProps, node *TNode, extras ...str
 			})
 		}
 		if v.Default != nil && v.Default.Raw != nil {
-			cNode.Value = string(bytes.Trim(v.Default.Raw, "\""))
+			defaultVal, _ := strconv.Unquote(string(v.Default.Raw))
+			cNode.Value = defaultVal
 		}
 		for _, e := range v.Enum {
 			if e.Raw == nil {
