@@ -53,28 +53,36 @@ func upload() http.HandlerFunc {
 			ctr.InternalError(w, err)
 			return
 		}
-		arr := bytes.Split(fileData, []byte("---\n"))
-		for _, v := range arr {
-			vb := bytes.TrimSpace(v)
-			if len(vb) == 0 {
-				continue
-			}
-			switch checkKind(vb) {
-			case global.KindQuickStartRule:
-				err = uploadQuickStart(vb)
-			case global.KindTemplate:
-				err = uploadTemplate(vb)
-			default:
-				vb, _ = convertToCustom(vb)
-				err = GenerateFile(vb, global.CustomResourcePath)
-			}
-			if err != nil {
-				ctr.BadRequest(w, err)
-				return
-			}
+		if err := UploadResource(fileData); err != nil {
+			ctr.BadRequest(w, err)
+			return
 		}
 		ctr.Success(w)
 	}
+}
+
+func UploadResource(fileData []byte) error {
+	var err error
+	arr := bytes.Split(fileData, []byte("---\n"))
+	for _, v := range arr {
+		vb := bytes.TrimSpace(v)
+		if len(vb) == 0 {
+			continue
+		}
+		switch checkKind(vb) {
+		case global.KindQuickStartRule:
+			err = uploadQuickStart(vb)
+		case global.KindTemplate:
+			err = uploadTemplate(vb)
+		default:
+			vb, _ = convertToCustom(vb)
+			err = GenerateFile(vb, global.CustomResourcePath)
+		}
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func GenerateFile(source []byte, targetDir string) error {

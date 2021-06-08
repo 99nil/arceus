@@ -142,7 +142,7 @@ func ParseSingle(data []byte, rule *types.QuickStartRule) ([]interface{}, error)
 		// 根据target填充值
 		for _, target := range v.Targets {
 			templateData := templates[target.Name]
-			var patchs []jsonpatch.Patch
+			patchs := make([]jsonpatch.Patch, 0, len(target.Fields))
 			for _, field := range target.Fields {
 				ops := []types.JSONOperation{
 					{
@@ -178,6 +178,7 @@ func ParseSingle(data []byte, rule *types.QuickStartRule) ([]interface{}, error)
 					if err != nil {
 						continue
 					}
+					initialData[k] = patchData
 					templates[target.Name][k] = patchData
 				}
 			}

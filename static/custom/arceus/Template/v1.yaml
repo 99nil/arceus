@@ -1,0 +1,120 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  creationTimestamp: null
+  name: template.arceus
+spec:
+  conversion:
+    strategy: None
+  group: arceus
+  names:
+    kind: Template
+    listKind: TemplateList
+    plural: ""
+    singular: Template
+  scope: ""
+  versions:
+  - name: v1
+    schema:
+      openAPIV3Schema:
+        properties:
+          apiVersion:
+            default: arceus/v1
+            description: 资源版本组
+            type: string
+          kind:
+            default: Template
+            description: 资源类型
+            type: string
+          metadata:
+            description: 基础信息
+            properties:
+              name:
+                default: nginx
+                description: 名称
+                type: string
+            required:
+            - name
+            type: object
+          spec:
+            description: 资源定义内容
+            properties:
+              group:
+                default: arceus
+                description: 模板分组
+                type: string
+              template:
+                description: 模板内容
+                items:
+                  properties:
+                    apiVersion:
+                      default: apps/v1
+                      description: 指定资源的版本组
+                      type: string
+                    data:
+                      default: |-
+                        apiVersion: apps/v1
+                        kind: Deployment
+                        metadata:
+                          name: nginx
+                          labels:
+                            app: nginx
+                        spec:
+                          selector:
+                            matchLabels:
+                              app: nginx
+                          template:
+                            metadata:
+                              name: nginx
+                              labels:
+                                app: nginx
+                            spec:
+                              containers:
+                                - name: nginx
+                                  image: 'nginx:latest'
+                              affinity:
+                                nodeAffinity:
+                                  requiredDuringSchedulingIgnoredDuringExecution:
+                                    nodeSelectorTerms:
+                                      - matchExpressions:
+                                          - key: node-role.kubernetes.io/edge
+                                            operator: Exists
+                      description: 指定资源对应的模板内容
+                      type: string
+                    kind:
+                      default: Deployment
+                      description: 指定资源的类型
+                      type: string
+                    name:
+                      default: deploy
+                      type: string
+                  type: object
+                  required:
+                  - name
+                  - apiVersion
+                  - kind
+                  - data
+                type: array
+              version:
+                default: v1
+                description: 模板版本号
+                type: string
+            required:
+            - group
+            - template
+            - version
+            type: object
+        required:
+        - spec
+        - apiVersion
+        - kind
+        - metadata
+        type: object
+    served: false
+    storage: false
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+  storedVersions: null

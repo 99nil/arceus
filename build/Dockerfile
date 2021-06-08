@@ -31,11 +31,15 @@ FROM alpine
 MAINTAINER zc
 LABEL maintainer="zc" \
     email="zc2638@qq.com" \
-    version="v0.6"
+    version="v0.7"
 
 ENV TS="Asia/Shanghai"
+ENV ARCEUS_BASE_PATH="/etc/arceus"
+
 COPY --from=alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=upx /work/arceus /work/arceus
+COPY --from=upx /work/arceus /bin/arceus
+COPY --from=builder /work/static/custom /etc/arceus/static/custom
+COPY --from=builder /work/static/rule /etc/arceus/static/rule
 
 WORKDIR /work
-CMD ["./arceus"]
+CMD ["arceus", "server"]

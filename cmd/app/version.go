@@ -26,7 +26,7 @@ import (
 func versionCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "version",
-		Short: "DEC Installer Version",
+		Short: "Show arceus version",
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println(version.Get())
 		},

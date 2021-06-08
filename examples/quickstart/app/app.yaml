@@ -5,4 +5,4 @@ spec:
   rule:
     - group: arceus
       version: v1
-      name: nginx-rule
+      name: app-rule

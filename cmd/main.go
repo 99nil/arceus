@@ -23,7 +23,7 @@ import (
 )
 
 func main() {
-	command := app.NewServerCommand()
+	command := app.NewRootCommand()
 	if err := command.Execute(); err != nil {
 		os.Exit(1)
 	}

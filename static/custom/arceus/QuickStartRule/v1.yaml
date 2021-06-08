@@ -1,0 +1,123 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  creationTimestamp: null
+  name: quickstartrule.arceus
+spec:
+  conversion:
+    strategy: None
+  group: arceus
+  names:
+    kind: QuickStartRule
+    listKind: QuickStartRuleList
+    plural: ""
+    singular: quickstartrule
+  scope: ""
+  versions:
+  - name: v1
+    schema:
+      openAPIV3Schema:
+        properties:
+          apiVersion:
+            default: arceus/v1beta
+            description: 版本组
+            type: string
+          kind:
+            default: QuickStartRule
+            description: 资源类型
+            type: string
+          metadata:
+            description: 基础信息
+            properties:
+              name:
+                description: 规则名称
+                type: string
+            required:
+            - name
+            type: object
+          spec:
+            description: 资源定义内容
+            properties:
+              group:
+                description: 分组
+                type: string
+              settings:
+                items:
+                  properties:
+                    path:
+                      description: 入参，Json Patch路径。例如：/name, /spec/templates/0/name
+                      type: string
+                    targets:
+                      description: 目标
+                      items:
+                        properties:
+                          fields:
+                            description: 目标字段
+                            items:
+                              properties:
+                                path:
+                                  description: 字段路径，Json Patch路径。例如：/name, /spec/templates/0/name
+                                  type: string
+                              required:
+                              - path
+                              type: object
+                            type: array
+                          name:
+                            description: 重定义的模板名称
+                            type: string
+                        required:
+                        - name
+                        - fields
+                        type: object
+                      type: array
+                  required:
+                  - path
+                  - targets
+                  type: object
+                type: array
+              templates:
+                description: 载入模板
+                items:
+                  properties:
+                    group:
+                      description: 模板分组
+                      type: string
+                    name:
+                      description: 模板重定义名称
+                      type: string
+                    template:
+                      description: 模板名称
+                      type: string
+                    version:
+                      description: 模板版本
+                      type: string
+                  required:
+                  - name
+                  - group
+                  - template
+                  - version
+                  type: object
+                type: array
+              version:
+                description: 版本
+                type: string
+            required:
+            - group
+            - settings
+            - templates
+            - version
+            type: object
+        required:
+        - spec
+        - apiVersion
+        - kind
+        - metadata
+        type: object
+    served: false
+    storage: false
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+  storedVersions: null

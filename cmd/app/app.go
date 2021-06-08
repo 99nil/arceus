@@ -22,6 +22,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/spf13/viper"
+
 	"github.com/pkgms/go/server"
 	"github.com/spf13/cobra"
 
@@ -32,32 +34,55 @@ import (
 
 var cfgFile string
 
-func NewServerCommand() *cobra.Command {
+func NewRootCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:          "arceus",
-		SilenceUsage: true,
-		RunE:         run,
+		Use: "arceus",
 	}
 	cfgFilePath := os.Getenv("ARCEUS_CONFIG")
 	if cfgFilePath == "" {
 		cfgFilePath = "config/config.yaml"
 	}
 	cmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", cfgFilePath, "config file (default is $HOME/config.yaml)")
-	cmd.AddCommand(versionCommand())
+	cmd.AddCommand(
+		versionCommand(),
+		serverCommand(),
+		applyCommand(),
+		quickstartCommand(),
+	)
 	return cmd
 }
 
-func run(cmd *cobra.Command, args []string) error {
-	if err := global.Init(); err != nil {
-		return err
+func serverCommand() *cobra.Command {
+	return &cobra.Command{
+		Use:          "server",
+		SilenceUsage: true,
+		Short:        "Start web server",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if err := initConfig(); err != nil {
+				return err
+			}
+			ctx := context.Background()
+			s := server.New(&server.Config{
+				Port: 2638,
+			})
+			s.Handler = handler.New()
+			fmt.Println("Listen on", s.Addr)
+			return s.Run(ctx)
+		},
 	}
-	ctx := context.Background()
-	s := server.New(&server.Config{
-		Port: 2638,
-	})
-	s.Handler = handler.New()
-	fmt.Println("Listen on", s.Addr)
-	return s.Run(ctx)
+}
+
+func initConfig() error {
+	cfg := global.Environ()
+	if err := server.ParseConfigWithEnv(cfgFile, cfg, global.Name); err != nil {
+		if _, ok := err.(*os.PathError); !ok {
+			return err
+		}
+		if val := viper.GetString("base_path"); val != "" {
+			cfg.BasePath = val
+		}
+	}
+	return global.Init(cfg)
 }
 
 func generate() {

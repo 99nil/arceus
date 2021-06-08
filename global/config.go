@@ -21,7 +21,7 @@ import (
 	"github.com/zc2638/arceus/pkg/util"
 )
 
-func Init() error {
+func Init(cfg *Config) error {
 	logrus.SetFormatter(&logrus.TextFormatter{
 		ForceColors:            true,
 		DisableLevelTruncation: true,
@@ -30,6 +30,8 @@ func Init() error {
 		TimestampFormat:        "2006/01/02 15:04:05",
 	})
 	ctr.InitLog(logrus.StandardLogger())
+
+	buildAllPath(cfg.BasePath)
 	if err := util.MkdirAll(CustomResourcePath); err != nil {
 		return err
 	}
@@ -37,4 +39,14 @@ func Init() error {
 		return err
 	}
 	return util.MkdirAll(RuleResourcePath)
+}
+
+type Config struct {
+	BasePath string `json:"base_path"`
+}
+
+func Environ() *Config {
+	cfg := &Config{}
+	cfg.BasePath = ResourcePath
+	return cfg
 }

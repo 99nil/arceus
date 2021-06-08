@@ -27,8 +27,23 @@ go run github.com/zc2638/arceus/cmd
 ```
 
 ### Docker
+基础启动
 ```shell
 docker run --name arceus -d -p 2638:2638 zc2638/arceus:latest
+```
+挂载启动
+```shell
+docker run --name arceus -d -p 2638:2638 -v ~/docker/arceus:/etc/arceus zc2638/arceus:latest
+```
+使用镜像执行QuickStart
+```shell
+docker run --rm -it \
+ -v ~/docker/arceus:/etc/arceus \
+ -v ~/docker/arceus/examples:/work/examples \
+ zc2638/arceus:latest \
+ sh -c './arceus apply -f /work/examples/template/nginx.yaml \
+ && ./arceus apply -f /work/examples/quickstart/app/app-rule.yaml \
+ && ./arceus qs -f /work/examples/quickstart/app/app.yaml -o /etc/arceus/output'
 ```
 
 ## Build

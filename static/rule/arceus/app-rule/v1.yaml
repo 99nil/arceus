@@ -26,13 +26,6 @@ spec:
     - path: /name
       targets:
         - name: nginx-temp
-          sub: service
-          fields:
-            - path: /metadata/name
-            - path: /metadata/labels/app
-            - path: /spec/selector/app
-        - name: nginx-temp
-          sub: deploy
           fields:
             - path: /metadata/name
             - path: /metadata/labels/app
@@ -40,3 +33,4 @@ spec:
             - path: /spec/template/metadata/name
             - path: /spec/template/metadata/labels/app
             - path: /spec/template/spec/containers/0/name
+            - path: /spec/selector/app

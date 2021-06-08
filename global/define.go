@@ -15,8 +15,10 @@ limitations under the License.
 */
 package global
 
-const (
-	ResourcePath           = "static"
+const Name = "ARCEUS"
+
+var (
+	ResourcePath           = "/etc/arceus/static"
 	CustomResourcePath     = ResourcePath + "/custom"
 	KubernetesResourcePath = ResourcePath + "/kubernetes"
 	TemplateResourcePath   = ResourcePath + "/template"
@@ -30,3 +32,11 @@ const (
 	KindQuickStartRule = "QuickStartRule"
 	KindCustom         = "CustomResourceDefinition"
 )
+
+func buildAllPath(base string) {
+	ResourcePath = base
+	CustomResourcePath = ResourcePath + "/custom"
+	KubernetesResourcePath = ResourcePath + "/kubernetes"
+	TemplateResourcePath = ResourcePath + "/template"
+	RuleResourcePath = ResourcePath + "/rule"
+}
