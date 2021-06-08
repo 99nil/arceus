@@ -8,6 +8,9 @@
 
 # 定义
   可视化结构数据构造器
+  
+# 依赖
+Go Version 1.16+
 
 # 用途
   - 可用Devops中，快速构造各类Yaml文件 （例k8s yaml、java 配置yaml ...），提升研发工作效率
