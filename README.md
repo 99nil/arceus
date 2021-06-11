@@ -6,17 +6,20 @@
 ![Main CI](https://github.com/zc2638/arceus/workflows/Main%20CI/badge.svg)
 
 
-# 定义
+## 定义
   可视化结构数据构造器
   
-# 依赖
+## 依赖
 Go Version 1.16+
 
-# 用途
+## 用途
   - 可用Devops中，快速构造各类Yaml文件 （例k8s yaml、java 配置yaml ...），提升研发工作效率
   - 可用于作为业务组件编排配置生成
   - etc...
-# 
+
+## 使用
+[使用手册](https://github.com/99nil/arceus/blob/main/docments/arceus-help.md)
+
 ## TODO 
 
 - 接口模式优化
