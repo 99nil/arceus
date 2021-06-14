@@ -18,7 +18,7 @@ Go Version 1.16+
   - etc...
 
 ## 使用
-[使用手册](https://github.com/99nil/arceus/blob/main/docments/arceus-help.md)
+[使用手册](https://github.com/99nil/arceus/blob/main/docs/help.md)
 
 ## TODO 
 
