@@ -106,7 +106,7 @@ func ParseSingle(data []byte, rule *types.QuickStartRule) ([]interface{}, error)
 	var count int
 	templates := make(map[string]map[string][]byte)
 	for _, v := range rule.Spec.Templates {
-		filePath := filepath.Join(v.Group, v.Template, v.Version) + ".yaml"
+		filePath := filepath.Join(v.Template.Group, v.Template.Name, v.Template.Version) + ".yaml"
 		fileData, err := fs.ReadFile(os.DirFS(global.TemplateResourcePath), filePath)
 		if err != nil {
 			return nil, err
@@ -130,14 +130,20 @@ func ParseSingle(data []byte, rule *types.QuickStartRule) ([]interface{}, error)
 
 	// 处理规则
 	for _, v := range rule.Spec.Settings {
-		// 根据path获取值
-		path := strings.TrimPrefix(v.Path, "/")
-		path = strings.ReplaceAll(path, "/", ".")
-		patchResult := jsonResult.Get(path)
-		if !patchResult.Exists() {
-			continue
+		var patchValue interface{}
+		if v.Value != "" {
+			// 优先根据value获取值
+			patchValue = v.Value
+		} else {
+			// 根据path获取值
+			path := strings.TrimPrefix(v.Path, "/")
+			path = strings.ReplaceAll(path, "/", ".")
+			patchResult := jsonResult.Get(path)
+			if !patchResult.Exists() {
+				continue
+			}
+			patchValue = patchResult.Value()
 		}
-		patchValue := patchResult.Value()
 
 		// 根据target填充值
 		for _, target := range v.Targets {

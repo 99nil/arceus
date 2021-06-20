@@ -7,9 +7,10 @@ spec:
   version: v1
   templates:
     - name: nginx-temp
-      group: arceus
-      version: v1
-      template: nginx
+      template:
+        name: nginx
+        group: arceus
+        version: v1
   settings:
     - path: /port
       targets:

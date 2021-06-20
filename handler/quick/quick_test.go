@@ -15,10 +15,12 @@ var (
 		Spec: types.QuickStartRuleSpec{
 			Templates: []types.RuleTemplateDefine{
 				{
-					Name:     "nginx",
-					Group:    "arceus",
-					Version:  "v1",
-					Template: "nginx",
+					Name: "nginx",
+					Template: types.RuleTemplateResourceDefine{
+						Name:    "nginx",
+						Group:   "arceus",
+						Version: "v1",
+					},
 				},
 			},
 			Settings: []types.RuleSetting{

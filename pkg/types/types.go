@@ -224,10 +224,14 @@ type QuickStartRuleSpec struct {
 }
 
 type RuleTemplateDefine struct {
-	Name     string `json:"name"`
-	Group    string `json:"group"`
-	Version  string `json:"version"`
-	Template string `json:"template"`
+	Name     string                     `json:"name"`
+	Template RuleTemplateResourceDefine `json:"template"`
+}
+
+type RuleTemplateResourceDefine struct {
+	Name    string `json:"name"`
+	Group   string `json:"group"`
+	Version string `json:"version"`
 }
 
 type RuleRelate struct {
@@ -246,7 +250,6 @@ type RuleRelateTo struct {
 }
 
 type RuleSetting struct {
-	Type    SettingType     `json:"type"`
 	Path    string          `json:"path"`
 	Value   string          `json:"value"`
 	Targets []SettingTarget `json:"targets"`
