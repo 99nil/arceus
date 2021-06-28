@@ -220,7 +220,14 @@ type QuickStartRuleSpec struct {
 	Input     JSONSchemaProps      `json:"input"`
 	Templates []RuleTemplateDefine `json:"templates"`
 	Relate    []RuleRelate         `json:"relate"`
+	Defines   []RuleDefine         `json:"defines"`
 	Settings  []RuleSetting        `json:"settings"`
+}
+
+type RuleDefine struct {
+	Path  string        `json:"path"`
+	Value string        `json:"value"`
+	Src   []interface{} `json:"src"`
 }
 
 type RuleTemplateDefine struct {
@@ -251,7 +258,6 @@ type RuleRelateTo struct {
 
 type RuleSetting struct {
 	Path    string          `json:"path"`
-	Value   string          `json:"value"`
 	Targets []SettingTarget `json:"targets"`
 }
 
@@ -265,13 +271,6 @@ type SettingTargetField struct {
 	Path string `json:"path"`
 	Op   string `json:"op"`
 }
-
-type SettingType string
-
-const (
-	SettingTypeInput SettingType = "input"
-	SettingTypeValue SettingType = "value"
-)
 
 type QuickStart struct {
 	TypeMeta   `json:",inline"`

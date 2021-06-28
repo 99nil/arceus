@@ -3,11 +3,9 @@ WORKDIR /work
 ADD . .
 RUN make ui
 
-FROM golang:1.16-alpine as builder
+FROM golang:1.16 as builder
 ENV GOPROXY=https://goproxy.io,direct
 ENV GO111MODULE=on
-
-RUN apk add gcc g++ make git libffi-dev openssl-dev libtool
 
 WORKDIR /go/cache
 ADD go.mod .
@@ -31,7 +29,7 @@ FROM alpine
 MAINTAINER zc
 LABEL maintainer="zc" \
     email="zc2638@qq.com" \
-    version="v0.7"
+    version="v0.8"
 
 ENV TS="Asia/Shanghai"
 ENV ARCEUS_BASE_PATH="/etc/arceus"

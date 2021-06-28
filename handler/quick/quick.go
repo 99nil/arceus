@@ -17,6 +17,7 @@ package quick
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/fs"
 	"net/http"
 	"os"
@@ -128,20 +129,27 @@ func ParseSingle(data []byte, rule *types.QuickStartRule) ([]interface{}, error)
 		}
 	}
 
+	// 合并path定义
+	defines := make(map[string]interface{})
+	for _, v := range rule.Spec.Defines {
+		val := fmt.Sprintf(v.Value, v.Src...)
+		defines[v.Path] = val
+	}
+
 	// 处理规则
 	for _, v := range rule.Spec.Settings {
+		// 根据path获取值
+		path := strings.TrimPrefix(v.Path, "/")
+		path = strings.ReplaceAll(path, "/", ".")
+		patchResult := jsonResult.Get(path)
 		var patchValue interface{}
-		if v.Value != "" {
-			// 优先根据value获取值
-			patchValue = v.Value
-		} else {
-			// 根据path获取值
-			path := strings.TrimPrefix(v.Path, "/")
-			path = strings.ReplaceAll(path, "/", ".")
-			patchResult := jsonResult.Get(path)
-			if !patchResult.Exists() {
+		if !patchResult.Exists() {
+			var ok bool
+			patchValue, ok = defines[path]
+			if !ok {
 				continue
 			}
+		} else {
 			patchValue = patchResult.Value()
 		}
 
