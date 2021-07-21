@@ -18,6 +18,8 @@ package handler
 import (
 	"net/http"
 
+	"github.com/zc2638/arceus/handler/raw"
+
 	"github.com/zc2638/arceus/handler/quick"
 
 	"github.com/zc2638/arceus/handler/template"
@@ -46,6 +48,7 @@ func New() http.Handler {
 		resource.Route,
 		template.Route,
 		quick.Route,
+		raw.Route,
 	)
 	apiDoc.RegisterMuxWithData(mux, false)
 	return mux
