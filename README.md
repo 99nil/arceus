@@ -4,7 +4,7 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/zc2638/arceus.svg)](https://pkg.go.dev/github.com/zc2638/arceus)
 [![Go Report Card](https://goreportcard.com/badge/github.com/zc2638/arceus)](https://goreportcard.com/report/github.com/zc2638/arceus)
 ![Main CI](https://github.com/zc2638/arceus/workflows/Main%20CI/badge.svg)
-
+<a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=d_FApC9aD6o6XZ2LR0zx5uO5Z642bP6M&jump_from=webapi"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="99nil" title="99nil"></a>
 
 ## 定义
   可结构化内容构造器
