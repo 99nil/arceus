@@ -29,11 +29,14 @@ import (
 	"github.com/zc2638/arceus/pkg/util"
 )
 
+type QuickStartOption struct {
+	FilePath   string
+	OutputPath string
+	Values     []string
+}
+
 func quickstartCommand() *cobra.Command {
-	var (
-		filePath   string
-		outputPath string
-	)
+	opt := &QuickStartOption{}
 	cmd := &cobra.Command{
 		Use: "quickstart",
 		Aliases: []string{
@@ -41,10 +44,10 @@ func quickstartCommand() *cobra.Command {
 		},
 		Short: "Quick start to use",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if filePath == "" {
-				return errors.New("QuickStart resource path not found")
+			if opt.FilePath == "" {
+				return errors.New("QuickStart resource file path not found")
 			}
-			stat, err := os.Stat(filePath)
+			stat, err := os.Stat(opt.FilePath)
 			if err != nil {
 				return err
 			}
@@ -56,7 +59,7 @@ func quickstartCommand() *cobra.Command {
 			var fileURLs []string
 			if stat.IsDir() {
 				// 处理目录下所有文件
-				dirs, err := os.ReadDir(filePath)
+				dirs, err := os.ReadDir(opt.FilePath)
 				if err != nil {
 					return err
 				}
@@ -64,20 +67,22 @@ func quickstartCommand() *cobra.Command {
 					if dir.IsDir() {
 						continue
 					}
-					fileURLs = append(fileURLs, filepath.Join(filePath, dir.Name()))
+					fileURLs = append(fileURLs, filepath.Join(opt.FilePath, dir.Name()))
 				}
 			} else {
-				fileURLs = append(fileURLs, filePath)
+				fileURLs = append(fileURLs, opt.FilePath)
 			}
-			return quickstart(fileURLs, outputPath)
+			return quickstart(opt, fileURLs)
 		},
 	}
-	cmd.Flags().StringVarP(&filePath, "file", "f", "", "QuickStart resource file path")
-	cmd.Flags().StringVarP(&outputPath, "output", "o", "quickstart", "output path")
+	cmd.Flags().StringVarP(&opt.FilePath, "file", "f", "", "Resource file path")
+	cmd.Flags().StringVarP(&opt.OutputPath, "output", "o", "quickstart", "Resource output path")
+	cmd.Flags().StringArrayVarP(&opt.Values, "values", "v", nil, "Resource parameters (key-value pair) e.g. app.name=test")
 	return cmd
 }
 
-func quickstart(fileURLs []string, outputPath string) error {
+func quickstart(opt *QuickStartOption, fileURLs []string) error {
+	pairs := types.ParseKValuePairs(opt.Values)
 	for _, url := range fileURLs {
 		fileData, err := os.ReadFile(url)
 		if err != nil {
@@ -87,8 +92,11 @@ func quickstart(fileURLs []string, outputPath string) error {
 		if err := yaml.Unmarshal(fileData, &data); err != nil {
 			return err
 		}
+		if data.Kind != types.QuickStartKind {
+			continue
+		}
 
-		result, err := quick.Parse(&data)
+		result, err := quick.Parse(&data, pairs...)
 		if err != nil {
 			return err
 		}
@@ -97,10 +105,10 @@ func quickstart(fileURLs []string, outputPath string) error {
 			filename = util.RandomStr(6)
 		}
 
-		if err := util.MkdirAll(outputPath); err != nil {
+		if err := util.MkdirAll(opt.OutputPath); err != nil {
 			return err
 		}
-		newFile, err := os.Create(filepath.Join(outputPath, filename+".yaml"))
+		newFile, err := os.Create(filepath.Join(opt.OutputPath, filename+".yaml"))
 		if err != nil {
 			return err
 		}

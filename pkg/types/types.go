@@ -15,6 +15,8 @@ limitations under the License.
 */
 package types
 
+import "strings"
+
 const (
 	Group          = "arceus"
 	CustomGroup    = "custom." + Group
@@ -288,4 +290,44 @@ type QuickStartSpecRule struct {
 	Group   string `json:"group"`
 	Version string `json:"version"`
 	Name    string `json:"name"`
+}
+
+type KValuePair struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
+}
+
+type KValuePairs []KValuePair
+
+func (ps KValuePairs) Filter() KValuePairs {
+	m := make(map[string]string)
+	for _, p := range ps {
+		m[p.Key] = p.Value
+	}
+	pairs := make(KValuePairs, 0, len(m))
+	for k, v := range m {
+		pairs = append(pairs, KValuePair{
+			Key:   k,
+			Value: v,
+		})
+	}
+	return pairs
+}
+
+func ParseKValuePairs(values []string) KValuePairs {
+	if len(values) == 0 {
+		return nil
+	}
+	pairs := make(KValuePairs, 0, len(values))
+	for _, v := range values {
+		vs := strings.SplitN(v, "=", 2)
+		if len(vs) != 2 {
+			continue
+		}
+		pairs = append(pairs, KValuePair{
+			Key:   vs[0],
+			Value: vs[1],
+		})
+	}
+	return pairs
 }

@@ -63,8 +63,8 @@ func quickstart() http.HandlerFunc {
 // 根据规则名称，获取所有规则资源
 func getRules(data *types.QuickStart) ([]types.QuickStartRule, error) {
 	rules := make([]types.QuickStartRule, 0, len(data.Spec.Rule))
-	for _, rule := range data.Spec.Rule {
-		filePath := filepath.Join(rule.Group, rule.Name, rule.Version) + ".yaml"
+	for _, r := range data.Spec.Rule {
+		filePath := filepath.Join(r.Group, r.Name, r.Version) + ".yaml"
 		fileData, err := fs.ReadFile(os.DirFS(global.RuleResourcePath), filePath)
 		if err != nil {
 			return nil, err
@@ -78,13 +78,45 @@ func getRules(data *types.QuickStart) ([]types.QuickStartRule, error) {
 	return rules, nil
 }
 
-func Parse(data *types.QuickStart) ([]interface{}, error) {
+func dataPatch(data []byte, pairs []types.KValuePair) ([]byte, error) {
+	for _, pair := range pairs {
+		p := strings.ReplaceAll(pair.Key, ".", "/")
+		ops := []types.JSONOperation{
+			{
+				Op:    "replace",
+				Path:  "/" + p,
+				Value: pair.Value,
+			},
+		}
+		marshal, err := json.Marshal(&ops)
+		if err != nil {
+			return nil, err
+		}
+		patch, err := jsonpatch.DecodePatch(marshal)
+		if err != nil {
+			return nil, err
+		}
+		data, err = patch.Apply(data)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return data, nil
+}
+
+func Parse(data *types.QuickStart, pairs ...types.KValuePair) ([]interface{}, error) {
 	rules, err := getRules(data)
 	if err != nil {
 		return nil, err
 	}
 	// 解析数据
 	jsonData, err := yaml.YAMLToJSON([]byte(data.Spec.Data))
+	if err != nil {
+		return nil, err
+	}
+
+	// 过滤数据
+	jsonData, err = dataPatch(jsonData, pairs)
 	if err != nil {
 		return nil, err
 	}
