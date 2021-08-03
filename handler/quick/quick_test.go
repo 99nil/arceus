@@ -4,7 +4,7 @@
 package quick
 
 import (
-	"github.com/zc2638/arceus/pkg/types"
+	"github.com/99nil/arceus/pkg/types"
 )
 
 var (

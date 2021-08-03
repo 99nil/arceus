@@ -18,7 +18,7 @@ package template
 import (
 	"net/http"
 
-	"github.com/zc2638/arceus/pkg/types"
+	"github.com/99nil/arceus/pkg/types"
 
 	"github.com/zc2638/swag/endpoint"
 	"github.com/zc2638/swag/swagger"

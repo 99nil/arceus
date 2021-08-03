@@ -22,8 +22,8 @@ import (
 	"github.com/tidwall/gjson"
 	"sigs.k8s.io/yaml"
 
-	"github.com/zc2638/arceus/pkg/types"
-	"github.com/zc2638/arceus/pkg/util"
+	"github.com/99nil/arceus/pkg/types"
+	"github.com/99nil/arceus/pkg/util"
 )
 
 func generate() http.HandlerFunc {

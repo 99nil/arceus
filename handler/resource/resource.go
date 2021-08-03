@@ -23,15 +23,15 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/zc2638/arceus/pkg/types"
+	"github.com/99nil/arceus/pkg/types"
 
 	"github.com/pkgms/go/ctr"
 	apiextensionsV1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset/scheme"
 	"k8s.io/apimachinery/pkg/runtime"
 
-	"github.com/zc2638/arceus/global"
-	"github.com/zc2638/arceus/static"
+	"github.com/99nil/arceus/global"
+	"github.com/99nil/arceus/static"
 )
 
 func list() http.HandlerFunc {

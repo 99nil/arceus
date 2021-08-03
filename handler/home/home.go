@@ -18,7 +18,7 @@ package home
 import (
 	"net/http"
 
-	"github.com/zc2638/arceus/pkg/version"
+	"github.com/99nil/arceus/pkg/version"
 
 	"github.com/pkgms/go/ctr"
 

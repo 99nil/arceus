@@ -27,9 +27,9 @@ import (
 	"github.com/pkgms/go/server"
 	"github.com/spf13/cobra"
 
-	"github.com/zc2638/arceus/global"
-	"github.com/zc2638/arceus/handler"
-	"github.com/zc2638/arceus/handler/resource"
+	"github.com/99nil/arceus/global"
+	"github.com/99nil/arceus/handler"
+	"github.com/99nil/arceus/handler/resource"
 )
 
 var cfgFile string

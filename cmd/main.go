@@ -19,7 +19,7 @@ import (
 	"os"
 	_ "time/tzdata"
 
-	"github.com/zc2638/arceus/cmd/app"
+	"github.com/99nil/arceus/cmd/app"
 )
 
 func main() {

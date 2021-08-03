@@ -18,19 +18,19 @@ package handler
 import (
 	"net/http"
 
-	"github.com/zc2638/arceus/handler/raw"
+	"github.com/99nil/arceus/handler/raw"
 
-	"github.com/zc2638/arceus/handler/quick"
+	"github.com/99nil/arceus/handler/quick"
 
-	"github.com/zc2638/arceus/handler/template"
+	"github.com/99nil/arceus/handler/template"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
 
-	"github.com/zc2638/arceus/handler/home"
-	"github.com/zc2638/arceus/handler/resource"
-	"github.com/zc2638/arceus/handler/web"
+	"github.com/99nil/arceus/handler/home"
+	"github.com/99nil/arceus/handler/resource"
+	"github.com/99nil/arceus/handler/web"
 	"github.com/zc2638/swag"
 )
 

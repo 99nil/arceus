@@ -16,9 +16,9 @@ limitations under the License.
 package global
 
 import (
+	"github.com/99nil/arceus/pkg/util"
 	"github.com/pkgms/go/ctr"
 	"github.com/sirupsen/logrus"
-	"github.com/zc2638/arceus/pkg/util"
 )
 
 func Init(cfg *Config) error {

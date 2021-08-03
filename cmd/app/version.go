@@ -20,7 +20,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/zc2638/arceus/pkg/version"
+	"github.com/99nil/arceus/pkg/version"
 )
 
 func versionCommand() *cobra.Command {

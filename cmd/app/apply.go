@@ -20,8 +20,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/99nil/arceus/handler/resource"
 	"github.com/spf13/cobra"
-	"github.com/zc2638/arceus/handler/resource"
 )
 
 func applyCommand() *cobra.Command {
