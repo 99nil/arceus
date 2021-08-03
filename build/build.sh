@@ -8,4 +8,4 @@ go build \
   -ldflags="-s -w -X github.com/99nil/arceus/pkg/version.version=$commitHash" \
   -installsuffix cgo \
   -o arceus \
-  github.com/zc2638/arceus/cmd
+  github.com/99nil/arceus/cmd
