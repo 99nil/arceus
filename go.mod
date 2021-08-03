@@ -1,4 +1,4 @@
-module github.com/zc2638/arceus
+module github.com/99nil/arceus
 
 go 1.16
 
