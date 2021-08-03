@@ -227,9 +227,9 @@ type QuickStartRuleSpec struct {
 }
 
 type RuleDefine struct {
-	Path  string        `json:"path"`
-	Value string        `json:"value"`
-	Src   []interface{} `json:"src"`
+	Path  string   `json:"path"`
+	Value string   `json:"value"`
+	Src   []string `json:"src"` // path
 }
 
 type RuleTemplateDefine struct {

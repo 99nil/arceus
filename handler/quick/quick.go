@@ -164,7 +164,14 @@ func ParseSingle(data []byte, rule *types.QuickStartRule) ([]interface{}, error)
 	// 合并path定义
 	defines := make(map[string]interface{})
 	for _, v := range rule.Spec.Defines {
-		val := fmt.Sprintf(v.Value, v.Src...)
+		src := make([]interface{}, 0, len(v.Src))
+		for _, s := range v.Src {
+			p := strings.TrimPrefix(s, "/")
+			p = strings.ReplaceAll(p, "/", ".")
+			val := jsonResult.Get(p).Value()
+			src = append(src, val)
+		}
+		val := fmt.Sprintf(v.Value, src...)
 		defines[v.Path] = val
 	}
 
@@ -177,7 +184,7 @@ func ParseSingle(data []byte, rule *types.QuickStartRule) ([]interface{}, error)
 		var patchValue interface{}
 		if !patchResult.Exists() {
 			var ok bool
-			patchValue, ok = defines[path]
+			patchValue, ok = defines[v.Path]
 			if !ok {
 				continue
 			}
@@ -199,6 +206,14 @@ func ParseSingle(data []byte, rule *types.QuickStartRule) ([]interface{}, error)
 				}
 				if field.Op != "" {
 					ops[0].Op = field.Op
+					if field.Op == "add" {
+						switch pv := patchValue.(type) {
+						case string:
+							if err := json.Unmarshal([]byte(pv), &ops[0].Value); err != nil {
+								return nil, err
+							}
+						}
+					}
 				}
 				marshal, err := json.Marshal(&ops)
 				if err != nil {
