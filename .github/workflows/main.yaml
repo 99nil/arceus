@@ -52,4 +52,4 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build
-        run: go build -ldflags="-s -w" -installsuffix cgo -o arceus github.com/zc2638/arceus/cmd
+        run: make build
