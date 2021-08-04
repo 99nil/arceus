@@ -78,9 +78,9 @@ func initConfig() error {
 		if _, ok := err.(*os.PathError); !ok {
 			return err
 		}
-		if val := viper.GetString("base_path"); val != "" {
-			cfg.BasePath = val
-		}
+	}
+	if val := viper.GetString("base_path"); val != "" {
+		cfg.BasePath = val
 	}
 	return global.Init(cfg)
 }
