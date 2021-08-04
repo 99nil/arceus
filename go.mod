@@ -16,7 +16,7 @@ require (
 	github.com/tidwall/gjson v1.7.5
 	github.com/zc2638/swag v1.1.3
 	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c // indirect
-	k8s.io/apiextensions-apiserver v0.20.5
-	k8s.io/apimachinery v0.20.5
+	k8s.io/apiextensions-apiserver v0.19.3
+	k8s.io/apimachinery v0.19.3
 	sigs.k8s.io/yaml v1.2.0
 )
