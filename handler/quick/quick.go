@@ -24,7 +24,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	jsonpatch "github.com/evanphx/json-patch"
+	jsonpatch "github.com/evanphx/json-patch/v5"
 	"github.com/pkgms/go/ctr"
 	"github.com/tidwall/gjson"
 	"sigs.k8s.io/yaml"

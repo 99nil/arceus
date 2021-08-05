@@ -74,9 +74,10 @@ func UploadResource(fileData []byte) error {
 			err = uploadQuickStart(vb)
 		case global.KindTemplate:
 			err = uploadTemplate(vb)
-		default:
+		case global.KindCustom:
 			vb, _ = convertToCustom(vb)
 			err = GenerateFile(vb, global.CustomResourcePath)
+		default:
 		}
 		if err != nil {
 			return err

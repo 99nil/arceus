@@ -3,8 +3,8 @@ module github.com/99nil/arceus
 go 1.16
 
 require (
-	github.com/99nil/ditto v0.0.0-20210721070836-b525d5dadba2 // indirect
-	github.com/evanphx/json-patch v4.9.0+incompatible
+	github.com/99nil/ditto v0.0.0-20210721070836-b525d5dadba2
+	github.com/evanphx/json-patch/v5 v5.5.0
 	github.com/go-chi/chi v1.5.4
 	github.com/go-chi/cors v1.2.0
 	github.com/gogo/protobuf v1.3.2 // indirect

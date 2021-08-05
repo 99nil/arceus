@@ -65,6 +65,9 @@ func applyCommand() *cobra.Command {
 	return cmd
 }
 
+// TODO 支持quickstart资源使用
+// TODO 新增create替代，与quickstart命令相对应
+// TODO 兼容API和CMD，定义interface
 func apply(fileURLs []string) error {
 	for _, url := range fileURLs {
 		fileData, err := os.ReadFile(url)
