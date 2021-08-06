@@ -206,13 +206,12 @@ func ParseSingle(data []byte, rule *types.QuickStartRule) ([]interface{}, error)
 				}
 				if field.Op != "" {
 					ops[0].Op = field.Op
-					if field.Op == "add" {
-						switch pv := patchValue.(type) {
-						case string:
-							if err := json.Unmarshal([]byte(pv), &ops[0].Value); err != nil {
-								return nil, err
-							}
-						}
+				}
+				switch pv := patchValue.(type) {
+				case string:
+					var opVal interface{}
+					if err := json.Unmarshal([]byte(pv), &opVal); err == nil {
+						ops[0].Value = opVal
 					}
 				}
 				marshal, err := json.Marshal(&ops)
