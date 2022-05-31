@@ -19,8 +19,7 @@ import (
 	"net/http"
 
 	"github.com/99nil/arceus/pkg/version"
-
-	"github.com/pkgms/go/ctr"
+	"github.com/99nil/gopkg/ctr"
 
 	"github.com/zc2638/swag/endpoint"
 	"github.com/zc2638/swag/swagger"

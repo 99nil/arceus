@@ -18,12 +18,12 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/pkgms/go/ctr"
-	"github.com/tidwall/gjson"
-	"sigs.k8s.io/yaml"
-
 	"github.com/99nil/arceus/pkg/types"
 	"github.com/99nil/arceus/pkg/util"
+	"github.com/99nil/gopkg/ctr"
+
+	"github.com/tidwall/gjson"
+	"sigs.k8s.io/yaml"
 )
 
 func generate() http.HandlerFunc {

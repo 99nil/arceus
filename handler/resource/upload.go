@@ -25,18 +25,18 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/99nil/arceus/global"
 	"github.com/99nil/arceus/pkg/types"
-	"github.com/pkgms/go/ctr"
+	"github.com/99nil/arceus/pkg/util"
+	"github.com/99nil/arceus/static"
+	"github.com/99nil/gopkg/ctr"
+
 	apiextensionsV1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset/scheme"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"sigs.k8s.io/yaml"
-
-	"github.com/99nil/arceus/global"
-	"github.com/99nil/arceus/pkg/util"
-	"github.com/99nil/arceus/static"
 )
 
 func upload() http.HandlerFunc {

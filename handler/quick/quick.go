@@ -24,13 +24,13 @@ import (
 	"path/filepath"
 	"strings"
 
-	jsonpatch "github.com/evanphx/json-patch/v5"
-	"github.com/pkgms/go/ctr"
-	"github.com/tidwall/gjson"
-	"sigs.k8s.io/yaml"
-
 	"github.com/99nil/arceus/global"
 	"github.com/99nil/arceus/pkg/types"
+	"github.com/99nil/gopkg/ctr"
+
+	jsonpatch "github.com/evanphx/json-patch/v5"
+	"github.com/tidwall/gjson"
+	"sigs.k8s.io/yaml"
 )
 
 func list() http.HandlerFunc {

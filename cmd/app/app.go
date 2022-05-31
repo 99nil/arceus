@@ -22,14 +22,13 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/spf13/viper"
-
-	"github.com/pkgms/go/server"
-	"github.com/spf13/cobra"
-
 	"github.com/99nil/arceus/global"
 	"github.com/99nil/arceus/handler"
 	"github.com/99nil/arceus/handler/resource"
+	"github.com/99nil/gopkg/server"
+
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var cfgFile string

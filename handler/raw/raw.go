@@ -19,7 +19,7 @@ import (
 	"net/http"
 
 	"github.com/99nil/ditto"
-	"github.com/pkgms/go/ctr"
+	"github.com/99nil/gopkg/ctr"
 )
 
 func convert() http.HandlerFunc {

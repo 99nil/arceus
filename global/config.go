@@ -17,7 +17,8 @@ package global
 
 import (
 	"github.com/99nil/arceus/pkg/util"
-	"github.com/pkgms/go/ctr"
+	"github.com/99nil/gopkg/ctr"
+
 	"github.com/sirupsen/logrus"
 )
 
@@ -29,7 +30,7 @@ func Init(cfg *Config) error {
 		FullTimestamp:          true,
 		TimestampFormat:        "2006/01/02 15:04:05",
 	})
-	ctr.InitLog(logrus.StandardLogger())
+	ctr.InitLogger(logrus.StandardLogger())
 
 	buildAllPath(cfg.BasePath)
 	if err := util.MkdirAll(CustomResourcePath); err != nil {
