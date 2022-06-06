@@ -21,19 +21,16 @@ import (
 	"github.com/99nil/arceus/pkg/version"
 	"github.com/99nil/gopkg/ctr"
 
+	"github.com/zc2638/swag"
 	"github.com/zc2638/swag/endpoint"
-	"github.com/zc2638/swag/swagger"
 )
 
-const tag = "home"
-
 // Route handle home routing related
-func Route(doc *swagger.API) {
-	doc.Tags = append(doc.Tags, swagger.Tag{
-		Name:        tag,
+func Route(doc *swag.API) {
+	doc.WithTags(swag.Tag{
+		Name:        "home",
 		Description: "主页",
-	})
-	doc.AddEndpoint(
+	}).AddEndpoint(
 		endpoint.New(
 			http.MethodGet, "/",
 			endpoint.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -41,7 +38,6 @@ func Route(doc *swagger.API) {
 				//ctr.OK(w, "Hello Arceus!")
 			})),
 			endpoint.ResponseSuccess(),
-			endpoint.Tags(tag),
 		),
 		endpoint.New(
 			http.MethodGet, "/version",
@@ -49,7 +45,6 @@ func Route(doc *swagger.API) {
 				ctr.OK(w, version.Get())
 			})),
 			endpoint.ResponseSuccess(endpoint.Schema(version.Version{})),
-			endpoint.Tags(tag),
 		),
 	)
 }

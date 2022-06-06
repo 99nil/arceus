@@ -18,20 +18,18 @@ package handler
 import (
 	"net/http"
 
-	"github.com/99nil/arceus/handler/raw"
-
+	"github.com/99nil/arceus/handler/home"
 	"github.com/99nil/arceus/handler/quick"
-
+	"github.com/99nil/arceus/handler/raw"
+	"github.com/99nil/arceus/handler/resource"
 	"github.com/99nil/arceus/handler/template"
-
+	"github.com/99nil/arceus/handler/web"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
 
-	"github.com/99nil/arceus/handler/home"
-	"github.com/99nil/arceus/handler/resource"
-	"github.com/99nil/arceus/handler/web"
 	"github.com/zc2638/swag"
+	"github.com/zc2638/swag/option"
 )
 
 func New() http.Handler {
@@ -42,7 +40,7 @@ func New() http.Handler {
 		cors.AllowAll().Handler,
 	)
 	mux.Mount("/web", web.New())
-	apiDoc := swag.New(swag.Title("Arceus API Doc"))
+	apiDoc := swag.New(option.Title("Arceus API Doc"))
 	apiDoc.AddEndpointFunc(
 		home.Route,
 		resource.Route,
@@ -50,6 +48,12 @@ func New() http.Handler {
 		quick.Route,
 		raw.Route,
 	)
-	apiDoc.RegisterMuxWithData(mux, false)
+
+	apiDoc.Walk(func(path string, e *swag.Endpoint) {
+		mux.Method(e.Method, path, e.Handler.(http.Handler))
+	})
+	mux.Handle("/swagger/json", apiDoc.Handler())
+	mux.Mount("/swagger/ui", swag.UIHandler("/swagger/ui", "/swagger/json", true))
+
 	return mux
 }

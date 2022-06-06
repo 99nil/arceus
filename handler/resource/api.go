@@ -18,87 +18,58 @@ package resource
 import (
 	"net/http"
 
-	"github.com/99nil/arceus/pkg/types"
+	pkgtypes "github.com/99nil/arceus/pkg/types"
 
+	"github.com/zc2638/swag"
 	"github.com/zc2638/swag/endpoint"
-	"github.com/zc2638/swag/swagger"
+	"github.com/zc2638/swag/types"
 )
 
-const tag = "resource"
-
 // Route handle resource routing related
-func Route(doc *swagger.API) {
-	doc.Tags = append(doc.Tags, swagger.Tag{
-		Name:        tag,
+func Route(doc *swag.API) {
+	doc.WithTags(swag.Tag{
+		Name:        "resource",
 		Description: "资源",
-	})
-	doc.AddEndpoint(
+	}).AddEndpoint(
 		endpoint.New(
 			http.MethodGet, "/resource/list",
 			endpoint.Handler(list()),
 			endpoint.Summary("资源列表"),
-			endpoint.Query("type", swagger.TypeString, "资源类型", false),
-			endpoint.ResponseSuccess(endpoint.Schema([]types.Resource{})),
-			endpoint.Tags(tag),
+			endpoint.Query("type", types.String, "资源类型", false),
+			endpoint.ResponseSuccess(endpoint.Schema([]pkgtypes.Resource{})),
 		),
 		endpoint.New(
 			http.MethodGet, "/resource/info",
 			endpoint.Handler(info()),
 			endpoint.Summary("资源详情"),
-			endpoint.Query("group", swagger.TypeString, "资源分组", true),
-			endpoint.Query("kind", swagger.TypeString, "资源名称", true),
-			endpoint.Query("version", swagger.TypeString, "资源版本", true),
+			endpoint.Query("group", types.String, "资源分组", true),
+			endpoint.Query("kind", types.String, "资源名称", true),
+			endpoint.Query("version", types.String, "资源版本", true),
 			endpoint.ResponseSuccess(),
-			endpoint.Tags(tag),
 		),
 		endpoint.New(
 			http.MethodGet, "/resource/tree",
 			endpoint.Handler(tree()),
 			endpoint.Summary("资源树详情"),
-			endpoint.Query("group", swagger.TypeString, "资源分组", true),
-			endpoint.Query("kind", swagger.TypeString, "资源名称", true),
-			endpoint.Query("version", swagger.TypeString, "资源版本", true),
-			endpoint.Query("type", swagger.TypeString, "资源类型", false),
+			endpoint.Query("group", types.String, "资源分组", true),
+			endpoint.Query("kind", types.String, "资源名称", true),
+			endpoint.Query("version", types.String, "资源版本", true),
+			endpoint.Query("type", types.String, "资源类型", false),
 			endpoint.ResponseSuccess(),
-			endpoint.Tags(tag),
 		),
 		endpoint.New(
 			http.MethodPost, "/resource/upload",
 			endpoint.Handler(upload()),
 			endpoint.Summary("资源上传"),
-			func(b *endpoint.Builder) {
-				if b.Endpoint.Parameters == nil {
-					b.Endpoint.Parameters = []swagger.Parameter{}
-				}
-				b.Endpoint.Parameters = append(b.Endpoint.Parameters, swagger.Parameter{
-					In:          "formData",
-					Type:        "file",
-					Name:        "file",
-					Description: "file to upload",
-					Required:    true,
-				})
-			},
+			endpoint.FormData("file", types.File, "file to upload", true),
 			endpoint.ResponseSuccess(),
-			endpoint.Tags(tag),
 		),
 		endpoint.New(
 			http.MethodPost, "/resource/generate",
 			endpoint.Handler(generate()),
 			endpoint.Summary("资源生成"),
-			func(b *endpoint.Builder) {
-				if b.Endpoint.Parameters == nil {
-					b.Endpoint.Parameters = []swagger.Parameter{}
-				}
-				b.Endpoint.Parameters = append(b.Endpoint.Parameters, swagger.Parameter{
-					In:          "formData",
-					Type:        "file",
-					Name:        "file",
-					Description: "file to upload",
-					Required:    true,
-				})
-			},
+			endpoint.FormData("file", types.File, "file to upload", true),
 			endpoint.ResponseSuccess(),
-			endpoint.Tags(tag),
 		),
 	)
 }

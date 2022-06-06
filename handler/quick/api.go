@@ -19,25 +19,22 @@ import (
 	"net/http"
 
 	"github.com/99nil/arceus/pkg/types"
+
+	"github.com/zc2638/swag"
 	"github.com/zc2638/swag/endpoint"
-	"github.com/zc2638/swag/swagger"
 )
 
-const tag = "quickstart"
-
 // Route handle template routing related
-func Route(doc *swagger.API) {
-	doc.Tags = append(doc.Tags, swagger.Tag{
-		Name:        tag,
+func Route(doc *swag.API) {
+	doc.WithTags(swag.Tag{
+		Name:        "quickstart",
 		Description: "模板",
-	})
-	doc.AddEndpoint(
+	}).AddEndpoint(
 		endpoint.New(
 			http.MethodGet, "/rule/list",
 			endpoint.Handler(list()),
 			endpoint.Summary("规则列表"),
 			endpoint.ResponseSuccess(endpoint.Schema([]types.Resource{})),
-			endpoint.Tags(tag),
 		),
 		endpoint.New(
 			http.MethodPost, "/quickstart",
@@ -45,7 +42,6 @@ func Route(doc *swagger.API) {
 			endpoint.Summary("快速开始"),
 			endpoint.Body(types.QuickStart{}, "快速开始资源定义", true),
 			endpoint.ResponseSuccess(),
-			endpoint.Tags(tag),
 		),
 	)
 }

@@ -18,10 +18,10 @@ package web
 import (
 	"net/http"
 
+	"github.com/99nil/arceus/static"
 	"github.com/go-chi/chi"
 
-	"github.com/99nil/arceus/static"
-	"github.com/zc2638/swag/swagger"
+	"github.com/zc2638/swag"
 )
 
 func New() http.Handler {
@@ -36,7 +36,7 @@ func fileSystem() http.HandlerFunc {
 			localRedirect(w, r, "/web/")
 			return
 		}
-		http.FileServer(swagger.DirFS(static.UIDir, static.UI)).ServeHTTP(w, r)
+		http.FileServer(swag.DirFS(static.UIDir, static.UI)).ServeHTTP(w, r)
 	}
 }
 

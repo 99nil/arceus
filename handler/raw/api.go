@@ -17,13 +17,14 @@ package raw
 import (
 	"net/http"
 
+	"github.com/zc2638/swag"
 	"github.com/zc2638/swag/endpoint"
-	"github.com/zc2638/swag/swagger"
+	"github.com/zc2638/swag/types"
 )
 
 // Route handle raw routing related
-func Route(doc *swagger.API) {
-	doc.WithTags(swagger.Tag{
+func Route(doc *swag.API) {
+	doc.WithTags(swag.Tag{
 		Name:        "raw",
 		Description: "数据",
 	}).AddEndpoint(
@@ -31,8 +32,8 @@ func Route(doc *swagger.API) {
 			http.MethodPost, "/raw/convert",
 			endpoint.Handler(convert()),
 			endpoint.Summary("数据转换"),
-			endpoint.Query("in", swagger.TypeString, "数据格式: json、yaml、xml、toml", true),
-			endpoint.Query("out", swagger.TypeString, "转换格式: json、yaml、xml、toml", true),
+			endpoint.Query("in", types.String, "数据格式: json、yaml、xml、toml", true),
+			endpoint.Query("out", types.String, "转换格式: json、yaml、xml、toml", true),
 			endpoint.Body(struct{}{}, "", true),
 			endpoint.ResponseSuccess(),
 		),
