@@ -85,7 +85,11 @@ func BuildNode(prop *apiextensionsV1.JSONSchemaProps, node *TNode, extras ...str
 			})
 		}
 		if v.Default != nil && v.Default.Raw != nil {
-			defaultVal, _ := strconv.Unquote(string(v.Default.Raw))
+			defaultRaw := string(v.Default.Raw)
+			defaultVal, err := strconv.Unquote(defaultRaw)
+			if err != nil {
+				defaultVal = defaultRaw
+			}
 			cNode.Value = defaultVal
 		}
 		for _, e := range v.Enum {
