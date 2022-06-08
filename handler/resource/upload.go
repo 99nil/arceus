@@ -152,6 +152,9 @@ func checkKind(source []byte) string {
 		if bytes.HasPrefix(v, []byte(kindPrefix+global.KindTemplate)) {
 			return global.KindTemplate
 		}
+		if bytes.HasPrefix(v, []byte(kindPrefix+global.KindCustom)) {
+			return global.KindCustom
+		}
 	}
 	return global.KindNull
 }

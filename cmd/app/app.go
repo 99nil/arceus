@@ -41,7 +41,7 @@ func NewRootCommand() *cobra.Command {
 	if cfgFilePath == "" {
 		cfgFilePath = "config/config.yaml"
 	}
-	cmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", cfgFilePath, "config file (default is $HOME/config.yaml)")
+	cmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", cfgFilePath, "config file")
 	cmd.AddCommand(
 		versionCommand(),
 		serverCommand(),
