@@ -16,3 +16,6 @@
 
 .idea
 _tmp
+static/ui/**
+!static/ui/readme.txt
+testdata

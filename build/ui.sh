@@ -5,22 +5,21 @@ set -u
 
 readonly tmpDir=_tmp
 rm -rf $tmpDir && mkdir -p $tmpDir
-cd $tmpDir || exit
+cd $tmpDir
 git clone --depth=1 https://github.com/99nil/arceus-ui.git arceus-ui
-cd arceus-ui || exit
+cd arceus-ui
 echo "Source Downloaded."
-yarn install || exit
-yarn build || exit
+yarn install
+yarn build
 echo "Generated."
 cd ../../
 
-if [ -d "static/ui" ]; then
-  mv static/ui static/ui.old
-fi
-mv $tmpDir/arceus-ui/build static/ui
+mkdir -p static/ui
+find static/ui/* | grep -v readme.txt | xargs rm -rf
+mv $tmpDir/arceus-ui/build/* static/ui/
 
 echo "Finished."
-rm -rf $tmpDir static/ui.old
+rm -rf $tmpDir
 echo "Cleanup."
 
 

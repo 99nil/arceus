@@ -55,9 +55,10 @@ func list() http.HandlerFunc {
 
 func info() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		group := r.URL.Query().Get("group")
-		kind := r.URL.Query().Get("kind")
-		version := r.URL.Query().Get("version")
+		query := r.URL.Query()
+		group := query.Get("group")
+		kind := query.Get("kind")
+		version := query.Get("version")
 
 		filePath := filepath.Join(group, kind, version) + ".yaml"
 		baseFilePath := filepath.Join(static.KubernetesDir, filePath)
@@ -75,9 +76,10 @@ func info() http.HandlerFunc {
 
 func tree() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		group := r.URL.Query().Get("group")
-		kind := r.URL.Query().Get("kind")
-		version := r.URL.Query().Get("version")
+		query := r.URL.Query()
+		group := query.Get("group")
+		kind := query.Get("kind")
+		version := query.Get("version")
 
 		filePath := filepath.Join(group, kind, version) + ".yaml"
 		baseFilePath := filepath.Join(static.KubernetesDir, filePath)

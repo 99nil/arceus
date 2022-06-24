@@ -31,7 +31,7 @@ LABEL maintainer="zc" \
     email="zc2638@qq.com" \
     version="v0.9"
 
-ENV TS="Asia/Shanghai"
+ENV TZ="Asia/Shanghai"
 ENV ARCEUS_BASE_PATH="/etc/arceus"
 
 COPY --from=alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
