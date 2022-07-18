@@ -6,8 +6,6 @@ metadata:
   creationTimestamp: null
   name: storageclasses.storage.k8s.io
 spec:
-  conversion:
-    strategy: None
   group: storage.k8s.io
   names:
     kind: StorageClass
@@ -112,5 +110,5 @@ status:
   acceptedNames:
     kind: ""
     plural: ""
-  conditions: []
-  storedVersions: []
+  conditions: null
+  storedVersions: null

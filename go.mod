@@ -13,6 +13,7 @@ require (
 	github.com/spf13/viper v1.12.0
 	github.com/tidwall/gjson v1.7.5
 	github.com/zc2638/swag v1.2.2
+	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/apiextensions-apiserver v0.19.3
 	k8s.io/apimachinery v0.19.3
 	sigs.k8s.io/yaml v1.2.0

@@ -59,7 +59,12 @@ type TNode struct {
 	Children []TNode     `json:"children"` // 子节点
 }
 
-func BuildNode(prop *apiextensionsV1.JSONSchemaProps, node *TNode, extras ...string) *TNode {
+func BuildNode(
+	patchSet map[string]*PatchItem,
+	prop *apiextensionsV1.JSONSchemaProps,
+	node *TNode,
+	extras ...string,
+) *TNode {
 	if prop.Type != TypeObject {
 		return nil
 	}
@@ -71,6 +76,7 @@ func BuildNode(prop *apiextensionsV1.JSONSchemaProps, node *TNode, extras ...str
 			Type:     TypeObject,
 			Required: prop.Required,
 		}
+		completePatch(patchSet, node)
 	}
 	for k, v := range prop.Properties {
 		cNode := &TNode{}
@@ -98,17 +104,20 @@ func BuildNode(prop *apiextensionsV1.JSONSchemaProps, node *TNode, extras ...str
 			}
 			cNode.Enums = append(cNode.Enums, string(bytes.Trim(e.Raw, "\"")))
 		}
+
 		switch v.Type {
 		// 对象的时候，需要向下解析properties
 		// 类型为object时，并且无children，则默认为string/string
 		case TypeObject:
-			cNode = BuildNode(&v, cNode)
+			cNode = BuildNode(patchSet, &v, cNode)
 
 		// 数组的时候，需要向下解析items，需要加入一个空的数组节点
 		case TypeArray:
-			array := buildArrayNode(&v, cNode)
+			array := buildArrayNode(patchSet, &v, cNode)
+			completePatch(patchSet, array)
 			cNode.Children = append(cNode.Children, *array)
 		}
+		completePatch(patchSet, cNode)
 		node.Children = append(node.Children, *cNode)
 	}
 	sort.SliceStable(node.Children, func(i, j int) bool {
@@ -119,7 +128,7 @@ func BuildNode(prop *apiextensionsV1.JSONSchemaProps, node *TNode, extras ...str
 	return node
 }
 
-func buildArrayNode(prop *apiextensionsV1.JSONSchemaProps, pNode *TNode) *TNode {
+func buildArrayNode(patchSet map[string]*PatchItem, prop *apiextensionsV1.JSONSchemaProps, pNode *TNode) *TNode {
 	v := prop.Items.Schema
 	node := &TNode{
 		Key:      pNode.Key + "." + TreeNodeArray,
@@ -129,9 +138,35 @@ func buildArrayNode(prop *apiextensionsV1.JSONSchemaProps, pNode *TNode) *TNode 
 		Type:     v.Type,
 	}
 	if v.Type == TypeObject {
-		node = BuildNode(v, node)
+		node = BuildNode(patchSet, v, node)
 	}
 	return node
+}
+
+func completePatch(patchSet map[string]*PatchItem, node *TNode) {
+	if len(patchSet) == 0 {
+		return
+	}
+
+	var key string
+	if node.Key != NodeRoot {
+		key = strings.TrimPrefix(node.Key, NodeRoot+".")
+	}
+
+	patchItem, ok := patchSet[key]
+	if !ok {
+		return
+	}
+
+	if len(patchItem.Required) > 0 {
+		node.Required = append(node.Required, patchItem.Required...)
+	}
+	if len(patchItem.Enum) > 0 {
+		node.Enums = append(node.Enums, patchItem.Enum...)
+	}
+	if patchItem.Default != nil {
+		node.Value = *patchItem.Default
+	}
 }
 
 func completeAPIVersion(node *TNode, extras ...string) {

@@ -6,8 +6,6 @@ metadata:
   creationTimestamp: null
   name: tokenreviews.authentication.k8s.io
 spec:
-  conversion:
-    strategy: None
   group: authentication.k8s.io
   names:
     kind: TokenReview
@@ -53,7 +51,7 @@ spec:
             type: object
           status:
             description: Status is filled in by the server and indicates whether the
-              request can be authenticated.
+              token can be authenticated.
             properties:
               audiences:
                 description: Audiences are audience identifiers chosen by the authenticator
@@ -112,5 +110,5 @@ status:
   acceptedNames:
     kind: ""
     plural: ""
-  conditions: []
-  storedVersions: []
+  conditions: null
+  storedVersions: null

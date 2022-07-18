@@ -6,8 +6,6 @@ metadata:
   creationTimestamp: null
   name: runtimeclasses.node.k8s.io
 spec:
-  conversion:
-    strategy: None
   group: node.k8s.io
   names:
     kind: RuntimeClass
@@ -24,7 +22,7 @@ spec:
           is used to run all containers in a pod. RuntimeClasses are (currently) manually
           defined by a user or cluster provisioner, and referenced in the PodSpec.
           The Kubelet is responsible for resolving the RuntimeClassName reference
-          before running the pod.  For more details, see https://git.k8s.io/enhancements/keps/sig-node/runtime-class.md
+          before running the pod.  For more details, see https://git.k8s.io/enhancements/keps/sig-node/585-runtime-class
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -52,8 +50,6 @@ spec:
           overhead:
             description: Overhead represents the resource overhead associated with
               running a pod for a given RuntimeClass. For more details, see https://git.k8s.io/enhancements/keps/sig-node/688-pod-overhead/README.md
-              This field is beta-level as of Kubernetes v1.18, and is only honored
-              by servers that enable the PodOverhead feature.
             properties:
               podFixed:
                 additionalProperties:
@@ -135,5 +131,5 @@ status:
   acceptedNames:
     kind: ""
     plural: ""
-  conditions: []
-  storedVersions: []
+  conditions: null
+  storedVersions: null

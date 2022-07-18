@@ -6,8 +6,6 @@ metadata:
   creationTimestamp: null
   name: flowschemas.flowcontrol.apiserver.k8s.io
 spec:
-  conversion:
-    strategy: None
   group: flowcontrol.apiserver.k8s.io
   names:
     kind: FlowSchema
@@ -103,11 +101,11 @@ spec:
                           nonResourceURLs:
                             description: '`nonResourceURLs` is a set of url prefixes
                               that a user should have access to and may not be empty.
-                              For example:   - "/healthz" is legal   - "/hea*" is
-                              illegal   - "/hea" is legal but matches nothing   -
-                              "/hea/*" also matches nothing   - "/healthz/*" matches
-                              all per-component health checks. "*" matches all non-resource
-                              urls. if it is present, it must be the only entry. Required.'
+                              For example: - "/healthz" is legal - "/hea*" is illegal
+                              - "/hea" is legal but matches nothing - "/hea/*" also
+                              matches nothing - "/healthz/*" matches all per-component
+                              health checks. "*" matches all non-resource urls. if
+                              it is present, it must be the only entry. Required.'
                             items:
                               type: string
                             type: array
@@ -138,8 +136,10 @@ spec:
                           request if and only if: (a) at least one member of verbs
                           matches the request, (b) at least one member of apiGroups
                           matches the request, (c) at least one member of resources
-                          matches the request, and (d) least one member of namespaces
-                          matches the request.'
+                          matches the request, and (d) either (d1) the request does
+                          not specify a namespace (i.e., `Namespace==""`) and clusterScope
+                          is true or (d2) the request specifies a namespace and least
+                          one member of namespaces matches the request''s namespace.'
                         properties:
                           apiGroups:
                             description: '`apiGroups` is a list of matching API groups
@@ -209,8 +209,7 @@ spec:
                           or service account.
                         properties:
                           group:
-                            description: GroupSubject holds detailed information for
-                              group-kind subject.
+                            description: '`group` matches based on user group name.'
                             properties:
                               name:
                                 description: name is the user group that matches,
@@ -221,11 +220,11 @@ spec:
                             - name
                             type: object
                           kind:
-                            description: Required
+                            description: '`kind` indicates which one of the other
+                              fields is non-empty. Required'
                             type: string
                           serviceAccount:
-                            description: ServiceAccountSubject holds detailed information
-                              for service-account-kind subject.
+                            description: '`serviceAccount` matches ServiceAccounts.'
                             properties:
                               name:
                                 description: '`name` is the name of matching ServiceAccount
@@ -240,8 +239,7 @@ spec:
                             - namespace
                             type: object
                           user:
-                            description: UserSubject holds detailed information for
-                              user-kind subject.
+                            description: '`user` matches based on username.'
                             properties:
                               name:
                                 description: '`name` is the username that matches,
@@ -305,5 +303,5 @@ status:
   acceptedNames:
     kind: ""
     plural: ""
-  conditions: []
-  storedVersions: []
+  conditions: null
+  storedVersions: null

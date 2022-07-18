@@ -6,8 +6,6 @@ metadata:
   creationTimestamp: null
   name: scales.apps
 spec:
-  conversion:
-    strategy: None
   group: apps
   names:
     kind: Scale
@@ -69,11 +67,10 @@ spec:
             type: object
         type: object
     served: true
-    storage: true
+    storage: false
 status:
   acceptedNames:
     kind: ""
     plural: ""
-  conditions: []
-  storedVersions:
-  - v1beta1
+  conditions: null
+  storedVersions: null

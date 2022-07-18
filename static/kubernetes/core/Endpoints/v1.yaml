@@ -6,8 +6,6 @@ metadata:
   creationTimestamp: null
   name: endpoints.core
 spec:
-  conversion:
-    strategy: None
   group: core
   names:
     kind: Endpoints
@@ -20,11 +18,10 @@ spec:
     schema:
       openAPIV3Schema:
         description: 'Endpoints is a collection of endpoints that implement the actual
-          service. Example:   Name: "mysvc",   Subsets: [     {       Addresses: [{"ip":
-          "10.10.1.1"}, {"ip": "10.10.2.2"}],       Ports: [{"name": "a", "port":
-          8675}, {"name": "b", "port": 309}]     },     {       Addresses: [{"ip":
-          "10.10.3.3"}],       Ports: [{"name": "a", "port": 93}, {"name": "b", "port":
-          76}]     },  ]'
+          service. Example: Name: "mysvc", Subsets: [ { Addresses: [{"ip": "10.10.1.1"},
+          {"ip": "10.10.2.2"}], Ports: [{"name": "a", "port": 8675}, {"name": "b",
+          "port": 309}] }, { Addresses: [{"ip": "10.10.3.3"}], Ports: [{"name": "a",
+          "port": 93}, {"name": "b", "port": 76}] }, ]'
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -49,11 +46,11 @@ spec:
             items:
               description: 'EndpointSubset is a group of addresses with a common set
                 of ports. The expanded set of endpoints is the Cartesian product of
-                Addresses x Ports. For example, given:   {     Addresses: [{"ip":
-                "10.10.1.1"}, {"ip": "10.10.2.2"}],     Ports:     [{"name": "a",
-                "port": 8675}, {"name": "b", "port": 309}]   } The resulting set of
-                endpoints can be viewed as:     a: [ 10.10.1.1:8675, 10.10.2.2:8675
-                ],     b: [ 10.10.1.1:309, 10.10.2.2:309 ]'
+                Addresses x Ports. For example, given: { Addresses: [{"ip": "10.10.1.1"},
+                {"ip": "10.10.2.2"}], Ports:     [{"name": "a", "port": 8675}, {"name":
+                "b", "port": 309}] } The resulting set of endpoints can be viewed
+                as: a: [ 10.10.1.1:8675, 10.10.2.2:8675 ], b: [ 10.10.1.1:309, 10.10.2.2:309
+                ]'
               properties:
                 addresses:
                   description: IP addresses which offer the related ports that are
@@ -193,11 +190,9 @@ spec:
                         description: The application protocol for this port. This
                           field follows standard Kubernetes label syntax. Un-prefixed
                           names are reserved for IANA standard service names (as per
-                          RFC-6335 and http://www.iana.org/assignments/service-names).
+                          RFC-6335 and https://www.iana.org/assignments/service-names).
                           Non-standard protocols should use prefixed names such as
-                          mycompany.com/my-custom-protocol. This is a beta field that
-                          is guarded by the ServiceAppProtocol feature gate and enabled
-                          by default.
+                          mycompany.com/my-custom-protocol.
                         type: string
                       name:
                         description: The name of this port.  This must match the 'name'
@@ -226,6 +221,5 @@ status:
   acceptedNames:
     kind: ""
     plural: ""
-  conditions: []
-  storedVersions:
-  - v1
+  conditions: null
+  storedVersions: null

@@ -6,8 +6,6 @@ metadata:
   creationTimestamp: null
   name: subjectaccessreviews.authorization.k8s.io
 spec:
-  conversion:
-    strategy: None
   group: authorization.k8s.io
   names:
     kind: SubjectAccessReview
@@ -146,5 +144,5 @@ status:
   acceptedNames:
     kind: ""
     plural: ""
-  conditions: []
-  storedVersions: []
+  conditions: null
+  storedVersions: null

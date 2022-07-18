@@ -6,8 +6,6 @@ metadata:
   creationTimestamp: null
   name: prioritylevelconfigurations.flowcontrol.apiserver.k8s.io
 spec:
-  conversion:
-    strategy: None
   group: flowcontrol.apiserver.k8s.io
   names:
     kind: PriorityLevelConfiguration
@@ -52,10 +50,10 @@ spec:
                       in proportion to their assured concurrency shares. This produces
                       the assured concurrency value (ACV) --- the number of requests
                       that may be executing at a time --- for each such priority level:
-                      \n             ACV(l) = ceil( SCL * ACS(l) / ( sum[priority
-                      levels k] ACS(k) ) ) \n bigger numbers of ACS mean more reserved
-                      concurrent requests (at the expense of every other PL). This
-                      field has a default value of 30."
+                      \n ACV(l) = ceil( SCL * ACS(l) / ( sum[priority levels k] ACS(k)
+                      ) ) \n bigger numbers of ACS mean more reserved concurrent requests
+                      (at the expense of every other PL). This field has a default
+                      value of 30."
                     format: int32
                     type: integer
                   limitResponse:
@@ -167,5 +165,5 @@ status:
   acceptedNames:
     kind: ""
     plural: ""
-  conditions: []
-  storedVersions: []
+  conditions: null
+  storedVersions: null

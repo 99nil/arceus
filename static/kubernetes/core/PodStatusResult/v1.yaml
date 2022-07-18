@@ -6,8 +6,6 @@ metadata:
   creationTimestamp: null
   name: podstatusresults.core
 spec:
-  conversion:
-    strategy: None
   group: core
   names:
     kind: PodStatusResult
@@ -76,19 +74,17 @@ spec:
                 type: array
               containerStatuses:
                 description: 'The list has one entry per container in the manifest.
-                  Each entry is currently the output of `docker inspect`. More info:
-                  https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#pod-and-container-status'
+                  More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#pod-and-container-status'
                 items:
                   description: ContainerStatus contains details for the current status
                     of this container.
                   properties:
                     containerID:
-                      description: Container's ID in the format 'docker://<container_id>'.
+                      description: Container's ID in the format '<type>://<container_id>'.
                       type: string
                     image:
                       description: 'The image the container is running. More info:
-                        https://kubernetes.io/docs/concepts/containers/images TODO(dchen1107):
-                        Which image the container is running with?'
+                        https://kubernetes.io/docs/concepts/containers/images.'
                       type: string
                     imageID:
                       description: ImageID of the container's image.
@@ -109,7 +105,7 @@ spec:
                           description: Details about a terminated container
                           properties:
                             containerID:
-                              description: Container's ID in the format 'docker://<container_id>'
+                              description: Container's ID in the format '<type>://<container_id>'
                               type: string
                             exitCode:
                               description: Exit status from the last termination of
@@ -163,11 +159,7 @@ spec:
                         readiness probe.
                       type: boolean
                     restartCount:
-                      description: The number of times the container has been restarted,
-                        currently based on the number of dead containers that have
-                        not yet been removed. Note that this is calculated from dead
-                        containers. But those containers are subject to garbage collection.
-                        This value will get capped at 5 by GC.
+                      description: The number of times the container has been restarted.
                       format: int32
                       type: integer
                     started:
@@ -192,7 +184,7 @@ spec:
                           description: Details about a terminated container
                           properties:
                             containerID:
-                              description: Container's ID in the format 'docker://<container_id>'
+                              description: Container's ID in the format '<type>://<container_id>'
                               type: string
                             exitCode:
                               description: Exit status from the last termination of
@@ -247,19 +239,18 @@ spec:
                 type: array
               ephemeralContainerStatuses:
                 description: Status for any ephemeral containers that have run in
-                  this pod. This field is alpha-level and is only populated by servers
-                  that enable the EphemeralContainers feature.
+                  this pod. This field is beta-level and available on clusters that
+                  haven't disabled the EphemeralContainers feature gate.
                 items:
                   description: ContainerStatus contains details for the current status
                     of this container.
                   properties:
                     containerID:
-                      description: Container's ID in the format 'docker://<container_id>'.
+                      description: Container's ID in the format '<type>://<container_id>'.
                       type: string
                     image:
                       description: 'The image the container is running. More info:
-                        https://kubernetes.io/docs/concepts/containers/images TODO(dchen1107):
-                        Which image the container is running with?'
+                        https://kubernetes.io/docs/concepts/containers/images.'
                       type: string
                     imageID:
                       description: ImageID of the container's image.
@@ -280,7 +271,7 @@ spec:
                           description: Details about a terminated container
                           properties:
                             containerID:
-                              description: Container's ID in the format 'docker://<container_id>'
+                              description: Container's ID in the format '<type>://<container_id>'
                               type: string
                             exitCode:
                               description: Exit status from the last termination of
@@ -334,11 +325,7 @@ spec:
                         readiness probe.
                       type: boolean
                     restartCount:
-                      description: The number of times the container has been restarted,
-                        currently based on the number of dead containers that have
-                        not yet been removed. Note that this is calculated from dead
-                        containers. But those containers are subject to garbage collection.
-                        This value will get capped at 5 by GC.
+                      description: The number of times the container has been restarted.
                       format: int32
                       type: integer
                     started:
@@ -363,7 +350,7 @@ spec:
                           description: Details about a terminated container
                           properties:
                             containerID:
-                              description: Container's ID in the format 'docker://<container_id>'
+                              description: Container's ID in the format '<type>://<container_id>'
                               type: string
                             exitCode:
                               description: Exit status from the last termination of
@@ -430,12 +417,11 @@ spec:
                     of this container.
                   properties:
                     containerID:
-                      description: Container's ID in the format 'docker://<container_id>'.
+                      description: Container's ID in the format '<type>://<container_id>'.
                       type: string
                     image:
                       description: 'The image the container is running. More info:
-                        https://kubernetes.io/docs/concepts/containers/images TODO(dchen1107):
-                        Which image the container is running with?'
+                        https://kubernetes.io/docs/concepts/containers/images.'
                       type: string
                     imageID:
                       description: ImageID of the container's image.
@@ -456,7 +442,7 @@ spec:
                           description: Details about a terminated container
                           properties:
                             containerID:
-                              description: Container's ID in the format 'docker://<container_id>'
+                              description: Container's ID in the format '<type>://<container_id>'
                               type: string
                             exitCode:
                               description: Exit status from the last termination of
@@ -510,11 +496,7 @@ spec:
                         readiness probe.
                       type: boolean
                     restartCount:
-                      description: The number of times the container has been restarted,
-                        currently based on the number of dead containers that have
-                        not yet been removed. Note that this is calculated from dead
-                        containers. But those containers are subject to garbage collection.
-                        This value will get capped at 5 by GC.
+                      description: The number of times the container has been restarted.
                       format: int32
                       type: integer
                     started:
@@ -539,7 +521,7 @@ spec:
                           description: Details about a terminated container
                           properties:
                             containerID:
-                              description: Container's ID in the format 'docker://<container_id>'
+                              description: Container's ID in the format '<type>://<container_id>'
                               type: string
                             exitCode:
                               description: Exit status from the last termination of
@@ -638,7 +620,7 @@ spec:
                   This list is empty if no IPs have been allocated yet.
                 items:
                   description: 'IP address information for entries in the (plural)
-                    PodIPs field. Each entry includes:    IP: An IP address allocated
+                    PodIPs field. Each entry includes: IP: An IP address allocated
                     to the pod. Routable at least within the cluster.'
                   properties:
                     ip:
@@ -670,6 +652,5 @@ status:
   acceptedNames:
     kind: ""
     plural: ""
-  conditions: []
-  storedVersions:
-  - v1
+  conditions: null
+  storedVersions: null

@@ -6,8 +6,6 @@ metadata:
   creationTimestamp: null
   name: tokenrequests.authentication.k8s.io
 spec:
-  conversion:
-    strategy: None
   group: authentication.k8s.io
   names:
     kind: TokenRequest
@@ -34,13 +32,12 @@ spec:
           metadata:
             type: object
           spec:
-            description: TokenRequestSpec contains client provided parameters of a
-              token request.
+            description: Spec holds information about the request being evaluated
             properties:
               audiences:
                 description: Audiences are the intendend audiences of the token. A
-                  recipient of a token must identitfy themself with an identifier
-                  in the list of audiences of the token, and otherwise should reject
+                  recipient of a token must identify themself with an identifier in
+                  the list of audiences of the token, and otherwise should reject
                   the token. A token issued for multiple audiences may be used to
                   authenticate against any of the audiences listed but implies a high
                   degree of trust between the target audiences.
@@ -78,7 +75,8 @@ spec:
             - audiences
             type: object
           status:
-            description: TokenRequestStatus is the result of a token request.
+            description: Status is filled in by the server and indicates whether the
+              token can be authenticated.
             properties:
               expirationTimestamp:
                 description: ExpirationTimestamp is the time of expiration of the
@@ -101,6 +99,5 @@ status:
   acceptedNames:
     kind: ""
     plural: ""
-  conditions: []
-  storedVersions:
-  - v1
+  conditions: null
+  storedVersions: null

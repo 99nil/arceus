@@ -6,8 +6,6 @@ metadata:
   creationTimestamp: null
   name: clusterroles.rbac.authorization.k8s.io
 spec:
-  conversion:
-    strategy: None
   group: rbac.authorization.k8s.io
   names:
     kind: ClusterRole
@@ -105,7 +103,8 @@ spec:
                   description: APIGroups is the name of the APIGroup that contains
                     the resources.  If multiple API groups are specified, any action
                     requested against one of the enumerated resources in any API group
-                    will be allowed.
+                    will be allowed. "" represents the core API group and "*" represents
+                    all API groups.
                   items:
                     type: string
                   type: array
@@ -134,8 +133,7 @@ spec:
                   type: array
                 verbs:
                   description: Verbs is a list of Verbs that apply to ALL the ResourceKinds
-                    and AttributeRestrictions contained in this rule. '*' represents
-                    all verbs.
+                    contained in this rule. '*' represents all verbs.
                   items:
                     type: string
                   type: array
@@ -150,5 +148,5 @@ status:
   acceptedNames:
     kind: ""
     plural: ""
-  conditions: []
-  storedVersions: []
+  conditions: null
+  storedVersions: null

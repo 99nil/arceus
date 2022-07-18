@@ -17,9 +17,15 @@ package static
 
 import "embed"
 
-const KubernetesDir = "kubernetes"
+const (
+	PatchDir      = "patch"
+	KubernetesDir = "kubernetes"
+	UIDir         = "ui"
+)
 
-const UIDir = "ui"
+// Patch is a dir for patch resources
+//go:embed patch
+var Patch embed.FS
 
 // Kubernetes is a dir for static content
 //go:embed kubernetes

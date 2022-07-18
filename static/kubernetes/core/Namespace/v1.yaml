@@ -6,8 +6,6 @@ metadata:
   creationTimestamp: null
   name: namespaces.core
 spec:
-  conversion:
-    strategy: None
   group: core
   names:
     kind: Namespace
@@ -87,6 +85,5 @@ status:
   acceptedNames:
     kind: ""
     plural: ""
-  conditions: []
-  storedVersions:
-  - v1
+  conditions: null
+  storedVersions: null

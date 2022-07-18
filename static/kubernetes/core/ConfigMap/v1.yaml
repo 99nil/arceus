@@ -6,8 +6,6 @@ metadata:
   creationTimestamp: null
   name: configmaps.core
 spec:
-  conversion:
-    strategy: None
   group: core
   names:
     kind: ConfigMap
@@ -66,6 +64,5 @@ status:
   acceptedNames:
     kind: ""
     plural: ""
-  conditions: []
-  storedVersions:
-  - v1
+  conditions: null
+  storedVersions: null

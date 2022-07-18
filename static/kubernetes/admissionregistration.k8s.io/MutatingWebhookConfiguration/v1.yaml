@@ -6,8 +6,6 @@ metadata:
   creationTimestamp: null
   name: mutatingwebhookconfigurations.admissionregistration.k8s.io
 spec:
-  conversion:
-    strategy: None
   group: admissionregistration.k8s.io
   names:
     kind: MutatingWebhookConfiguration
@@ -147,15 +145,14 @@ spec:
                     cluster scoped resource, it never skips the webhook. \n For example,
                     to run the webhook on any objects whose namespace is not associated
                     with \"runlevel\" of \"0\" or \"1\";  you will set the selector
-                    as follows: \"namespaceSelector\": {   \"matchExpressions\": [
-                    \    {       \"key\": \"runlevel\",       \"operator\": \"NotIn\",
-                    \      \"values\": [         \"0\",         \"1\"       ]     }
-                    \  ] } \n If instead you want to only run the webhook on any objects
-                    whose namespace is associated with the \"environment\" of \"prod\"
-                    or \"staging\"; you will set the selector as follows: \"namespaceSelector\":
-                    {   \"matchExpressions\": [     {       \"key\": \"environment\",
-                    \      \"operator\": \"In\",       \"values\": [         \"prod\",
-                    \        \"staging\"       ]     }   ] } \n See https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+                    as follows: \"namespaceSelector\": { \"matchExpressions\": [ {
+                    \"key\": \"runlevel\", \"operator\": \"NotIn\", \"values\": [
+                    \"0\", \"1\" ] } ] } \n If instead you want to only run the webhook
+                    on any objects whose namespace is associated with the \"environment\"
+                    of \"prod\" or \"staging\"; you will set the selector as follows:
+                    \"namespaceSelector\": { \"matchExpressions\": [ { \"key\": \"environment\",
+                    \"operator\": \"In\", \"values\": [ \"prod\", \"staging\" ] }
+                    ] } \n See https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
                     for more examples of label selectors. \n Default to the empty
                     LabelSelector, which matches everything."
                   properties:
@@ -366,5 +363,5 @@ status:
   acceptedNames:
     kind: ""
     plural: ""
-  conditions: []
-  storedVersions: []
+  conditions: null
+  storedVersions: null

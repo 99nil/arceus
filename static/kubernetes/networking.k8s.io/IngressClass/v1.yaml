@@ -6,8 +6,6 @@ metadata:
   creationTimestamp: null
   name: ingressclasses.networking.k8s.io
 spec:
-  conversion:
-    strategy: None
   group: networking.k8s.io
   names:
     kind: IngressClass
@@ -75,8 +73,6 @@ spec:
                   scope:
                     description: Scope represents if this refers to a cluster or namespace
                       scoped resource. This may be set to "Cluster" (default) or "Namespace".
-                      Field can be enabled with IngressClassNamespacedParams feature
-                      gate.
                     type: string
                 required:
                 - kind
@@ -90,5 +86,5 @@ status:
   acceptedNames:
     kind: ""
     plural: ""
-  conditions: []
-  storedVersions: []
+  conditions: null
+  storedVersions: null

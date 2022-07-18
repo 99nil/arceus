@@ -6,8 +6,6 @@ metadata:
   creationTimestamp: null
   name: imagereviews.imagepolicy.k8s.io
 spec:
-  conversion:
-    strategy: None
   group: imagepolicy.k8s.io
   names:
     kind: ImageReview
@@ -93,6 +91,5 @@ status:
   acceptedNames:
     kind: ""
     plural: ""
-  conditions: []
-  storedVersions:
-  - v1alpha1
+  conditions: null
+  storedVersions: null

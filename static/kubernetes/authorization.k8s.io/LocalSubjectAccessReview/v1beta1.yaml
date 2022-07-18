@@ -6,8 +6,6 @@ metadata:
   creationTimestamp: null
   name: localsubjectaccessreviews.authorization.k8s.io
 spec:
-  conversion:
-    strategy: None
   group: authorization.k8s.io
   names:
     kind: LocalSubjectAccessReview
@@ -150,5 +148,5 @@ status:
   acceptedNames:
     kind: ""
     plural: ""
-  conditions: []
-  storedVersions: []
+  conditions: null
+  storedVersions: null

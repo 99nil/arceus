@@ -6,8 +6,6 @@ metadata:
   creationTimestamp: null
   name: selfsubjectrulesreviews.authorization.k8s.io
 spec:
-  conversion:
-    strategy: None
   group: authorization.k8s.io
   names:
     kind: SelfSubjectRulesReview
@@ -115,7 +113,7 @@ spec:
                       type: array
                     resources:
                       description: Resources is a list of resources this rule applies
-                        to.  "*" means all in the specified apiGroups.  "*/foo" represents
+                        to.  "*" means all in the specified apiGroups. "*/foo" represents
                         the subresource 'foo' for all resources in the specified apiGroups.
                       items:
                         type: string
@@ -145,5 +143,5 @@ status:
   acceptedNames:
     kind: ""
     plural: ""
-  conditions: []
-  storedVersions: []
+  conditions: null
+  storedVersions: null

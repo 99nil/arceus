@@ -23,6 +23,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"gopkg.in/yaml.v3"
+
 	"github.com/99nil/arceus/global"
 	"github.com/99nil/arceus/pkg/types"
 	"github.com/99nil/arceus/static"
@@ -102,8 +104,17 @@ func tree() http.HandlerFunc {
 			ctr.OK(w, struct{}{})
 			return
 		}
+
+		var patchSet map[string]*types.PatchItem
+		patchPath := filepath.Join(static.PatchDir, baseFilePath)
+		// If there is no patch resource, the patch will not be operated.
+		patchData, err := fs.ReadFile(static.Patch, patchPath)
+		if err == nil {
+			_ = yaml.Unmarshal(patchData, &patchSet)
+		}
+
 		apiVersion := data.Spec.Group + "/" + data.Spec.Versions[0].Name
-		node := types.BuildNode(data.Spec.Versions[0].Schema.OpenAPIV3Schema, nil, apiVersion, data.Spec.Names.Kind)
+		node := types.BuildNode(patchSet, data.Spec.Versions[0].Schema.OpenAPIV3Schema, nil, apiVersion, data.Spec.Names.Kind)
 		ctr.OK(w, node)
 	}
 }

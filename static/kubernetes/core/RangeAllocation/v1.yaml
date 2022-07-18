@@ -6,8 +6,6 @@ metadata:
   creationTimestamp: null
   name: rangeallocations.core
 spec:
-  conversion:
-    strategy: None
   group: core
   names:
     kind: RangeAllocation
@@ -52,6 +50,5 @@ status:
   acceptedNames:
     kind: ""
     plural: ""
-  conditions: []
-  storedVersions:
-  - v1
+  conditions: null
+  storedVersions: null

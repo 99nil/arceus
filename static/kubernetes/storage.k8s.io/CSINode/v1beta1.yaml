@@ -6,8 +6,6 @@ metadata:
   creationTimestamp: null
   name: csinodes.storage.k8s.io
 spec:
-  conversion:
-    strategy: None
   group: storage.k8s.io
   names:
     kind: CSINode
@@ -117,5 +115,5 @@ status:
   acceptedNames:
     kind: ""
     plural: ""
-  conditions: []
-  storedVersions: []
+  conditions: null
+  storedVersions: null

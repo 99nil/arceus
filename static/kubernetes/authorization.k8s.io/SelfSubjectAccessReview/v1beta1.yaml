@@ -6,8 +6,6 @@ metadata:
   creationTimestamp: null
   name: selfsubjectaccessreviews.authorization.k8s.io
 spec:
-  conversion:
-    strategy: None
   group: authorization.k8s.io
   names:
     kind: SelfSubjectAccessReview
@@ -126,5 +124,5 @@ status:
   acceptedNames:
     kind: ""
     plural: ""
-  conditions: []
-  storedVersions: []
+  conditions: null
+  storedVersions: null

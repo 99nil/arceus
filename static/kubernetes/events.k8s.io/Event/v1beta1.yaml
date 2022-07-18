@@ -6,8 +6,6 @@ metadata:
   creationTimestamp: null
   name: events.events.k8s.io
 spec:
-  conversion:
-    strategy: None
   group: events.k8s.io
   names:
     kind: Event
@@ -198,5 +196,5 @@ status:
   acceptedNames:
     kind: ""
     plural: ""
-  conditions: []
-  storedVersions: []
+  conditions: null
+  storedVersions: null

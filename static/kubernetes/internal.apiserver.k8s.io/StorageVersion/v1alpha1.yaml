@@ -6,8 +6,6 @@ metadata:
   creationTimestamp: null
   name: storageversions.internal.apiserver.k8s.io
 spec:
-  conversion:
-    strategy: None
   group: internal.apiserver.k8s.io
   names:
     kind: StorageVersion
@@ -19,7 +17,7 @@ spec:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: ' Storage version of a specific resource.'
+        description: Storage version of a specific resource.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -124,6 +122,5 @@ status:
   acceptedNames:
     kind: ""
     plural: ""
-  conditions: []
-  storedVersions:
-  - v1alpha1
+  conditions: null
+  storedVersions: null

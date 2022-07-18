@@ -26,6 +26,12 @@ const (
 	QuickStartKind = "QuickStart"
 )
 
+type PatchItem struct {
+	Enum     []string `json:"enum" yaml:"enum"`
+	Required []string `json:"required" yaml:"required"`
+	Default  *string  `json:"default" yaml:"default"`
+}
+
 type JSONOperation struct {
 	Op    string      `json:"op"` // add|remove|replace
 	Path  string      `json:"path"`
