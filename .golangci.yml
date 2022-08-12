@@ -22,8 +22,8 @@ run:
     - vendor
     - fake
     - config
-    - database
     - build
+    - examples
 
 # output configuration options
 output:
@@ -41,7 +41,7 @@ output:
 
 linters-settings:
   goimports:
-    local-prefixes: backend
+    local-prefixes: github.com/99nil
 
 linters:
   disable-all: true
