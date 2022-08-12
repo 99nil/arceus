@@ -21,6 +21,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/99nil/gopkg/sets"
+
 	apiextensionsV1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 )
 
@@ -76,7 +78,6 @@ func BuildNode(
 			Type:     TypeObject,
 			Required: prop.Required,
 		}
-		completePatch(patchSet, node)
 	}
 	for k, v := range prop.Properties {
 		cNode := &TNode{}
@@ -125,6 +126,7 @@ func BuildNode(
 	})
 	completeAPIVersion(node, extras...)
 	completeMetadata(node)
+	completePatch(patchSet, node)
 	return node
 }
 
@@ -151,6 +153,14 @@ func completePatch(patchSet map[string]*PatchItem, node *TNode) {
 	var key string
 	if node.Key != NodeRoot {
 		key = strings.TrimPrefix(node.Key, NodeRoot+".")
+	} else {
+		set := sets.NewString()
+		for _, v := range node.Children {
+			set.Add(v.Name)
+		}
+		if set.Has("spec") && set.Has(NodeMetadata) && set.Has(NodeKind) && set.Has(NodeAPIVersion) {
+			node.Required = append(node.Required, "spec", NodeMetadata, NodeAPIVersion, NodeKind)
+		}
 	}
 
 	patchItem, ok := patchSet[key]

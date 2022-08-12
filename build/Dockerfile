@@ -3,7 +3,7 @@ WORKDIR /work
 ADD . .
 RUN make ui
 
-FROM golang:1.16 as builder
+FROM golang:1.18 as builder
 ENV GOPROXY=https://goproxy.io,direct
 ENV GO111MODULE=on
 
@@ -25,19 +25,23 @@ RUN upx --best --lzma -o /work/arceus arceus.pre
 FROM alpine:3.6 as alpine
 RUN apk add -U --no-cache ca-certificates
 
-FROM alpine
+FROM alpine:3.6
 MAINTAINER zc
-LABEL maintainer="zc" \
+LABEL \
+    maintainer="zc" \
     email="zc2638@qq.com" \
-    version="v0.9"
+    version="0.9"
 
 ENV TZ="Asia/Shanghai"
 ENV ARCEUS_BASE_PATH="/etc/arceus"
 
 COPY --from=alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=upx /work/arceus /bin/arceus
+COPY --from=builder /work/static/kubernetes /etc/arceus/static/kubernetes
+COPY --from=builder /work/static/patch /etc/arceus/static/patch
 COPY --from=builder /work/static/custom /etc/arceus/static/custom
 COPY --from=builder /work/static/rule /etc/arceus/static/rule
+COPY --from=builder /work/static/template /etc/arceus/static/template
 
 WORKDIR /work
 CMD ["arceus", "server"]

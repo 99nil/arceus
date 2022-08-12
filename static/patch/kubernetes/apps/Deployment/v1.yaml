@@ -1,0 +1,24 @@
+spec.template.spec.initContainers.-:
+  required:
+    - image
+spec.template.spec.initContainers.-.imagePullPolicy:
+  enum:
+    - Always
+    - Never
+    - IfNotPresent
+spec.template.spec.containers.-:
+  required:
+    - image
+spec.template.spec.containers.-.imagePullPolicy:
+  enum:
+    - Always
+    - Never
+    - IfNotPresent
+spec.template.spec.ephemeralContainers.-:
+  required:
+    - image
+spec.template.spec.ephemeralContainers.-.imagePullPolicy:
+  enum:
+    - Always
+    - Never
+    - IfNotPresent
