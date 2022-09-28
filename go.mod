@@ -1,6 +1,6 @@
 module github.com/99nil/arceus
 
-go 1.18
+go 1.19
 
 require (
 	github.com/99nil/ditto v0.0.0-20210721070836-b525d5dadba2

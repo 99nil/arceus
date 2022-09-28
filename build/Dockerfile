@@ -29,8 +29,7 @@ FROM alpine:3.6
 MAINTAINER zc
 LABEL \
     maintainer="zc" \
-    email="zc2638@qq.com" \
-    version="0.10"
+    email="zc2638@qq.com"
 
 ENV TZ="Asia/Shanghai"
 ENV ARCEUS_BASE_PATH="/etc/arceus"

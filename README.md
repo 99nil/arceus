@@ -2,7 +2,7 @@
 
 ![LICENSE](https://img.shields.io/github/license/zc2638/arceus.svg?style=flat-square&color=blue)
 [![Go Reference](https://pkg.go.dev/badge/github.com/zc2638/arceus.svg)](https://pkg.go.dev/github.com/zc2638/arceus)
-[![Go Report Card](https://goreportcard.com/badge/github.com/zc2638/arceus)](https://goreportcard.com/report/github.com/zc2638/arceus)
+[![Go Report Card](https://goreportcard.com/badge/github.com/zc2638/arceus?style=flat-square)](https://goreportcard.com/report/github.com/zc2638/arceus)
 ![Main CI](https://github.com/zc2638/arceus/workflows/Main%20CI/badge.svg)
 <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=d_FApC9aD6o6XZ2LR0zx5uO5Z642bP6M&jump_from=webapi"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="99nil" title="99nil"></a>
 
@@ -13,18 +13,13 @@ Kubernetes(k8s) 所有资源内容生成器，支持CRD。
 
 [**在线demo**](http://arceus.99nil.com/)
 
-## 依赖
+## 功能
 
-Go Version 1.16+
-
-## 用途
-
-- 可用Devops中，快速构造各类定义文件 （例k8s yaml、java 配置yaml 、json），提升研发工作效率
-- 可用于作为业务组件编排配置生成
-- 内置所有kubernetes基础资源，可快速使用编排
-- 可动态解析kubernetes CRD资源
-- 可动态解析任意yaml文件内容
-- etc...
+- 支持 构建/解析 YAML、JSON、TOML 格式资源
+- 支持 构建 Kubernetes 基础资源
+- 支持 解析 Kubernetes CRD 资源
+- 支持 解析模板资源
+- 支持 代码框提示（Press CTRL）
 
 ## 使用
 
