@@ -15,7 +15,11 @@
 package web
 
 import (
+	"crypto/md5"
+	"fmt"
 	"net/http"
+	"strings"
+	"time"
 
 	"github.com/99nil/arceus/static"
 
@@ -30,7 +34,20 @@ func New() http.Handler {
 }
 
 func fileSystem() http.HandlerFunc {
+	data := []byte(time.Now().String())
+	etag := fmt.Sprintf("%x", md5.Sum(data))
+
 	return func(w http.ResponseWriter, r *http.Request) {
+		if match := r.Header.Get("If-None-Match"); match != "" {
+			if strings.Contains(match, etag) {
+				w.WriteHeader(http.StatusNotModified)
+				return
+			}
+		}
+
+		r.Header.Set("Cache-Control", "public, max-age=31536000")
+		r.Header.Set("ETag", etag)
+
 		if r.URL.Path == "" {
 			localRedirect(w, r, "/web/")
 			return
